@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>שפת הקשר – משחק זוגי</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbf3ec;--card:#fffdfa;--ink:#3b2230;--mut:#7d6672;--rose:#c9566b;--rose2:#e58a8f;--gold:#d49a3a;--sage:#5f9a7f;--line:#ecd9cc;--soft:#f8e4e0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#201219;--card:#2c1a24;--ink:#f6e8e2;--mut:#bfa3ad;--rose:#ee8397;--rose2:#c9566b;--gold:#e8b65c;--sage:#7fc3a3;--line:#4a2e3b;--soft:#3b2230;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#201219;--card:#2c1a24;--ink:#f6e8e2;--mut:#bfa3ad;--rose:#ee8397;--rose2:#c9566b;--gold:#e8b65c;--sage:#7fc3a3;--line:#4a2e3b;--soft:#3b2230;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Heebo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.65;font-size:17px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+#app{max-width:760px;margin:0 auto;padding:16px 16px 60px}
+h1,h2,h3{line-height:1.25;margin:0}
+button{font:inherit;cursor:pointer;border:0}
+.btn{background:linear-gradient(135deg,var(--rose),var(--rose2));color:#fff;padding:13px 26px;border-radius:999px;font-weight:700;box-shadow:0 6px 18px rgba(201,86,107,.28);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}.btn.big{font-size:20px;padding:16px 36px}
+.btn.ghost{background:transparent;color:var(--rose);box-shadow:none;border:2px solid var(--rose)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin:14px 0;box-shadow:0 4px 16px rgba(120,60,70,.06)}
+.quote{background:linear-gradient(135deg,var(--soft),var(--card));font-size:19px;font-weight:500;text-align:center;border-color:var(--rose2)}
+.hero{text-align:center;padding:50px 8px 20px;position:relative;overflow:hidden}
+.eyebrow{color:var(--gold);font-weight:700;letter-spacing:.5px}
+.hero h1{font-size:clamp(46px,13vw,84px);font-weight:800;background:linear-gradient(135deg,var(--rose),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:6px 0}
+.sig{font-size:25px;font-weight:700;margin:6px 0}
+.sub{color:var(--mut);max-width:460px;margin:0 auto 26px}
+.names{display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:26px;flex-wrap:wrap}
+.names input{width:150px}
+input,textarea{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px;width:100%}
+input:focus,textarea:focus{outline:none;border-color:var(--rose)}
+.fl{position:absolute;inset:0;pointer-events:none}
+.fl span{position:absolute;bottom:-30px;font-size:22px;opacity:0;animation:up 9s linear infinite}
+@keyframes up{0%{transform:translateY(0);opacity:0}15%{opacity:.5}100%{transform:translateY(-520px) rotate(25deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fl{display:none}.btn{transition:none}}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.bar{flex:1;height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:99px;transition:width .5s}
+.pct{font-weight:700;color:var(--rose);min-width:42px}
+.back{background:var(--soft);color:var(--rose);border-radius:99px;padding:6px 14px;font-weight:600}
+.map{position:relative;margin:20px 0}
+.st{display:flex;gap:14px;align-items:center;width:100%;text-align:start;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px;margin:0 0 26px;position:relative;color:var(--ink)}
+.st:not(:last-child)::after{content:"";position:absolute;bottom:-26px;inset-inline-start:42px;width:3px;height:26px;background:repeating-linear-gradient(var(--rose2) 0 5px,transparent 5px 10px)}
+.st:nth-child(even){margin-inline-start:28px}.st:nth-child(odd){margin-inline-end:28px}
+.st.open{border-color:var(--rose);box-shadow:0 6px 20px rgba(201,86,107,.2)}
+.st.lock{opacity:.55;cursor:not-allowed}.st.fin{border-color:var(--sage)}
+.ic{flex:none;width:58px;height:58px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:28px}
+.st h3{font-size:19px}.st small{color:var(--mut);display:block}
+.pips{display:flex;gap:6px;margin-top:4px}.pips b{width:20px;height:6px;border-radius:9px;background:var(--line)}.pips b.on{background:var(--sage)}
+.tabs{display:flex;gap:8px;margin:14px 0;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:6px 0;z-index:5}
+.tabs button{flex:1;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 4px;font-weight:600;color:var(--mut);font-size:15px}
+.tabs button.on{border-color:var(--rose);color:var(--rose);background:var(--soft)}
+.grid{display:grid;gap:14px}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+.lc{border-top:6px solid var(--c);margin:0}.lc h3{font-size:19px}.lc .tag{color:var(--c);font-weight:700;margin:2px 0 8px}
+.lc ul{margin:0;padding-inline-start:20px;color:var(--ink)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.flow span{background:var(--soft);border:2px solid var(--rose2);border-radius:99px;padding:6px 16px;font-weight:700}
+.flow em{color:var(--rose);font-style:normal;font-weight:800}
+.h2{font-size:22px;margin:22px 0 8px}
+.opt{display:block;width:100%;text-align:start;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:13px 16px;margin:9px 0;color:var(--ink)}
+.opt:hover{border-color:var(--rose)}.opt.ok{border-color:var(--sage);background:rgba(95,154,127,.15)}.opt.no{border-color:#c0504d;opacity:.7}
+.seg{padding:1px 6px;border-radius:8px;background:var(--soft)}.ph{color:var(--mut)}
+.lab{font-weight:700;color:var(--c);margin-top:12px;display:block}
+.pv{font-size:19px;line-height:2;border-inline-start:5px solid var(--rose);padding-inline-start:14px}
+.cv{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:8px 0}
+.cv .a{text-decoration:line-through;color:#b65a58;background:rgba(192,80,77,.1)}.cv .b{background:rgba(95,154,127,.18);font-weight:600}.cv div{padding:9px 12px;border-radius:12px}
+.big{font-size:28px}
+.role{display:inline-block;background:var(--rose);color:#fff;border-radius:99px;padding:3px 16px;font-weight:700}
+.role.l{background:var(--sage)}.role.b{background:var(--gold)}
+.line{background:var(--soft);border-radius:14px;padding:12px 16px;margin:8px 0;font-weight:500;font-size:19px}
+.timer{text-align:center;margin:16px 0}
+.time{font-size:62px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--rose);direction:ltr}
+.rules li{margin:5px 0}
+.dots{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}.dots b{width:9px;height:9px;border-radius:50%;background:var(--line)}.dots b.on{background:var(--rose)}
+.row{display:flex;gap:10px;justify-content:space-between;margin-top:16px}
+.cen{text-align:center}.mut{color:var(--mut)}
+.pick{display:flex;gap:8px;margin:10px 0}.pick button{flex:1;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px;font-weight:600;color:var(--ink)}.pick button.on{border-color:var(--rose);background:var(--soft)}
+details summary{cursor:pointer;font-weight:700;color:var(--rose)}
+.tick{color:var(--sage)}
+
+.lang{display:inline-flex;border:2px solid var(--line);border-radius:99px;overflow:hidden;margin-bottom:6px}.lang button{background:var(--card);color:var(--mut);padding:5px 14px;font-weight:600;font-size:14px}.lang button.on{background:var(--rose);color:#fff}
+.ov{position:fixed;inset:0;background:rgba(30,10,20,.6);display:grid;place-items:center;z-index:50;padding:16px}.md{background:var(--card);border-radius:24px;max-width:420px;width:100%;padding:24px;text-align:center;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.price{font-size:52px;font-weight:800;color:var(--rose);line-height:1.2}
+.st.pay{border-color:var(--gold);cursor:pointer}.st.pre{border-style:dashed}
+body.wine{--bg:#2b0b16;--card:#3a1220;--ink:#f7e7d0;--mut:#d3b79a;--rose:#e0b45a;--rose2:#b8324f;--gold:#e0b45a;--sage:#c47a5a;--line:#5a2233;--soft:#4a1829;color-scheme:dark}
+body.wine .btn{color:#2b0b16}body.wine .btn.ghost{background:transparent;color:var(--gold);border-color:var(--gold)}body.wine .role,body.wine .lang button.on{color:#2b0b16}
+.st.next{border-color:var(--rose);box-shadow:0 0 0 4px rgba(201,86,107,.25),0 8px 26px rgba(201,86,107,.35);animation:glow 1.8s ease-in-out infinite}
+.st .nx{color:var(--rose);font-weight:800}
+@keyframes glow{50%{box-shadow:0 0 0 10px rgba(201,86,107,.1),0 8px 26px rgba(201,86,107,.35)}}
+@media (prefers-reduced-motion:reduce){.st.next{animation:none}}
+body{transition:background .5s}
+body.ask{--bg:#fde1e5}body.ans{--bg:#dcf0e8}
+@media (prefers-color-scheme:dark){body.ask{--bg:#431c2a}body.ans{--bg:#17332b}}
+.splash{min-height:82vh;display:grid;place-content:center;justify-items:center;text-align:center;gap:4px;cursor:pointer}
+.logo .draw{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:dr 1.8s ease forwards}
+.logo .d2{animation-delay:.5s}
+.logo .ht{opacity:0;transform-box:fill-box;transform-origin:center;animation:pop .6s 1.5s ease forwards,beat 1.6s 2.1s ease-in-out infinite}
+@keyframes dr{to{stroke-dashoffset:0}}@keyframes pop{to{opacity:1}}@keyframes beat{50%{transform:scale(1.15)}}
+.sp-t{font-size:clamp(34px,10vw,58px);font-weight:800;background:linear-gradient(135deg,var(--rose),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:6px 0 0;opacity:0;animation:pop .9s 1s forwards}
+.sp-s{color:var(--mut);margin:0;opacity:0;animation:pop .9s 1.5s forwards}
+@media (prefers-reduced-motion:reduce){.logo .draw{animation:none;stroke-dashoffset:0}.logo .ht,.sp-t,.sp-s{animation:none;opacity:1}}
+.err{color:#c0504d;font-weight:600;margin:8px 0}
+.chip{display:inline-block;background:var(--soft);border-radius:99px;padding:4px 14px;font-weight:700}.chip.ok{background:rgba(95,154,127,.2);color:var(--sage)}
+.lk{background:var(--soft);border-radius:12px;padding:10px;word-break:break-all;font-size:14px;margin:8px 0;user-select:all;direction:ltr;text-align:left}
+a.btn{display:inline-block;text-decoration:none}
+.fab{position:fixed;inset-inline-end:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;background:linear-gradient(135deg,var(--rose),var(--rose2));color:#fff;border-radius:99px;padding:12px 20px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.fab .bd{background:#fff;color:#c9566b;border-radius:99px;padding:0 8px;margin-inline-start:8px}
+.cp{position:fixed;inset-inline-end:0;bottom:0;z-index:45;width:min(100%,420px);height:min(78vh,620px);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:22px 22px 0 0;display:flex;flex-direction:column;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.3)}
+.ch{display:flex;justify-content:space-between;align-items:center}
+.cm{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px 2px}
+.mg{max-width:82%;padding:8px 12px;border-radius:16px;background:var(--soft);word-break:break-word}
+.mg.me{background:var(--rose);color:#fff}.mg small{display:block;opacity:.75;font-size:11px}
+html[dir=rtl] .mg.me,html[dir=ltr] .mg.th{align-self:flex-start}html[dir=rtl] .mg.th,html[dir=ltr] .mg.me{align-self:flex-end}
+.cin{display:flex;gap:8px}.cn{font-size:12px;color:var(--mut);margin:6px 0 0}
+.res{border:2px solid var(--rose2);background:linear-gradient(135deg,var(--soft),var(--card))}.res.on{box-shadow:0 0 0 4px rgba(201,86,107,.2),0 10px 30px rgba(201,86,107,.25)}
+.rl{font-weight:800;color:var(--rose);margin-bottom:6px}.rt{font-size:22px;font-weight:600;line-height:1.8;min-height:60px}
+.rt .seg{background:transparent;border-bottom:3px solid var(--c);padding:0 2px}
+.ra{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.foot{text-align:center;color:var(--mut);font-size:13px;margin:34px 0 80px}
+#toast{position:fixed;inset-inline:0;bottom:90px;margin:auto;width:max-content;max-width:90%;background:#3b2230;color:#fff;padding:10px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:60}#toast.on{opacity:1}
+.rolebar{text-align:center;font-weight:700;margin:10px 0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="chat"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const COL=["#c9566b","#d49a3a","#5f9a7f","#8a6bb0"];
+const M_HE=[
+{t:"לזהות את שפת הקשר",s:"ממעבר מדיבור אוטומטי לשיח מודע",ic:"🔍",
+ L:{idea:"אנחנו לא מדברים איך שאנחנו חושבים שאנחנו מדברים – אנחנו מדברים איך שלמדנו לשרוד בקשר.",
+ cards:[{h:"🛡️ שפת הישרדות",g:"הקשר קיים – אבל במתח מתמיד",p:["האשמה, ביקורת, הגנה","שתיקה או התפרצות","צורך “לנצח” בשיחה"]},
+ {h:"🌫️ שפת הימנעות",g:"הקשר שקט – אבל רחוק",p:["“הכול בסדר” כשלא בסדר","ויתור על עצמי כדי לשמור שקט","פחד מקונפליקט"]},
+ {h:"🌱 שפת בנייה",g:"הקשר חי – ונבנה",p:["אחריות על הדיבור","ביטוי רגשי ללא האשמה","יכולת לשהות בקושי יחד"]}],
+ note:"מה שנאמר – אינו מה שנשמע. אנחנו שומעים איום, לא מילים. זה לא חוסר רצון להקשיב – זו שפה שלא פוענחה. רוב הזוגות נעים בין הישרדות להימנעות, מבלי לדעת שיש שפה שלישית."},
+ tool:"quiz",
+ P:[{n:"לשמוע את השפה – בלי להגיב",rules:["אין ויכוח","אין תיקון","אין תגובה רגשית","אין “אבל”","אין פרשנות","זה לא שיח – זה תרגול הקשבה"],
+ round:[{t:"הדובר/ת – דיבור מודע",w:"S",x:"עונים בקול, ברצף, בלי לעצור. לא מאשימים – מדברים על עצמנו בלבד.",l:["כשקשה לי בקשר שלנו – אני בדרך כלל מגיב/ה ב________","ברגעי מתח, השפה שיוצאת ממני היא בדרך כלל…","הדבר שהכי קשה לי להגיד בזוגיות הוא…","כשאני לא נשמע/ת – אני נוטה ל…"],s:300},
+ {t:"המקשיב/ה – הקשבה שקטה",w:"L",x:"לא מגיבים, לא מתקנים, לא מסבירים, לא מתגוננים. רק שואלים את עצמכם בשקט:",l:["איזו שפת קשר אני שומע/ת כאן? הישרדות / הימנעות / בנייה"],s:0},
+ {t:"שיקוף מינימלי",w:"L",x:"משפט אחד בלבד, בדיוק בפורמט הזה. בלי להוסיף כלום – לא “וזה בגלל…” ולא “וגם אני…”",l:["מה ששמעתי הוא שכשקשה לך – השפה שלך נוטה ל________."],s:60}],swap:1,
+ closing:[{t:"סגירה משותפת",w:"B",x:"כל אחד משלים בתורו. לא פותחים שיחה מעבר לזה.",l:["הדבר שהכי הפתיע אותי היה…","משהו אחד שלמדתי על שפת הקשר שלנו…"],s:180},
+ {t:"משפט המפתח",w:"B",x:"אמרו יחד:",l:["היום לא תיקנו כלום – אבל התחלנו לראות. ומכאן אפשר לבנות."],s:0}]}]},
+{t:"דפוסי שיח שמרחיקים",s:"לזהות, לעצור, ולהפסיק לפגוע בלי כוונה",ic:"🌀",
+ L:{idea:"בזוגיות אנחנו לא מגיבים למה שנאמר – אלא למה שזה מפעיל בנו.",
+ cards:[{h:"1. דפוס ההאשמה",g:"“אתה תמיד / את אף פעם”",p:["הכללה וביקורת","הטלת אחריות על האחר","באמת קורה: צורך להיראות ולהישמע – שמתחפש לביקורת"]},
+ {h:"2. דפוס ההגנה",g:"“זה לא נכון / אתה מגזים / זה בגללך”",p:["הצדקה והסברים","ביטול החוויה של האחר","באמת קורה: פחד מאשמה שמונע הקשבה"]},
+ {h:"3. דפוס הנסיגה",g:"שתיקה, התרחקות, סגירות",p:["הימנעות משיחה, “אין לי כוח”","קיפאון רגשי","באמת קורה: ניסיון לשמור על עצמי – במחיר הקשר"]},
+ {h:"4. דפוס ההסלמה",g:"הרמת קול, ציניות, פיצוץ",p:["תגובות קיצוניות וטונים חדים","אובדן גבולות בדיבור","באמת קורה: כאב שלא קיבל מקום – ויוצא בעוצמה"]}],
+ flow:{h:"המעגל הזוגי – דפוס אחד מפעיל דפוס אחר",st:["האשמה","הגנה","הסלמה","נסיגה"],loop:1},
+ note:"ברגע שהדפוס מזוהה – הוא מפסיק להיות “אנחנו”. הזוגיות לא דורשת אנשים מושלמים, אלא אנשים שמזהים מה מנהל אותם."},
+ tool:"match",
+ P:[{n:"לזהות את הדפוס – בלי להאשים",rules:["מדברים על הדפוס שלי – לא של בן/בת הזוג","בלי דוגמאות ובלי סיפורים","לא “אתה מתחיל” – אלא “זה המעגל שלנו”"],
+ pre:[{t:"בחירה אישית",w:"B",x:"כל אחד בוחר בשקט דפוס אחד שהוא מזהה בעצמו – לא בבן/בת הזוג: האשמה, הגנה, נסיגה או הסלמה.",l:[],s:60}],
+ round:[{t:"שיתוף מוגן",w:"S",x:"אומרים משפט אחד, ממלאים את החסר:",l:["כשאני מרגיש/ה ______, הדפוס שנוטה לצאת ממני הוא ______."],s:60},
+ {t:"הקשבה ושיקוף",w:"L",x:"עונים רק מילה אחת – וזה הכול:",l:["שמעתי."],s:0}],swap:1,
+ closing:[{t:"זיהוי משותף",w:"B",x:"יחד משלימים:",l:["המעגל שאנחנו מזהים בינינו הוא ______."],s:120}]}]},
+{t:"תקשורת אחראית",s:"לדבר את עצמי בלי לפגוע בקשר",ic:"🗣️",
+ L:{idea:"הרגש שלי הוא אמיתי – אבל האחריות על האופן שבו אני מבטא אותו היא שלי.",
+ flow:{h:"נוסחת שפת הקשר",st:["עובדה","רגש","משמעות","בקשה"]},
+ cards:[{h:"1. אחריות על הרגש",g:"",p:["לא: “את גורמת לי להרגיש…”","כן: “כשקורה ____, אני מרגיש/ה ____.”"]},
+ {h:"2. הפרדה בין רגש לבקשה",g:"",p:["רגש הוא שלי.","בקשה היא הזמנה – לא דרישה."]},
+ {h:"3. טון קודם לתוכן",g:"",p:["אותו משפט, בטון אחר – יוצר מציאות אחרת."]}],
+ note:"לא כל אמת צריכה להיאמר מיד, אבל כל אמת צריכה להיאמר נכון. זו לא נוסחה טכנית – זו שפה בוגרת."},
+ tool:"build3",
+ P:[{n:"לדבר רגש – בלי להאשים",rules:["בוחרים נושא יומיומי וקטן – לא קונפליקט גדול","הדובר/ת מדבר/ת לפי הנוסחה, בלי חריגות","המקשיב/ה: בלי פתרונות ובלי הסברים"],
+ round:[{t:"הדובר/ת – לפי הנוסחה",w:"S",x:"בוחרים נושא יומיומי קטן ומשתפים לפי ארבעת השלבים:",l:["עובדה: כשקרה ____","רגש: הרגשתי ____","משמעות: זה גרם לי להרגיש ____","בקשה: אני מבקש/ת ____"],s:180},
+ {t:"המקשיב/ה – תגובת שפת הקשר",w:"L",x:"עונים רק:",l:["שמעתי. זה הגיוני שאתה/את מרגיש/ה כך."],s:0}],swap:1,
+ closing:[{t:"משפט סיום",w:"B",x:"",l:["תקשורת אחראית אינה ויתור על עצמי – אלא דרך לשמור גם עליי וגם על הקשר."],s:0}]},
+ {n:"תרגול מתקדם – להישאר בקשר גם כשקשה",rules:["בוחרים זמן רגוע – לא בזמן ריב","קובעים מראש 15–20 דקות","מסכימים לעצור אם יש הצפה","זה לא תרגיל לפתרון בעיות – אלא לשמירה על הקשר"],
+ pre:[{t:"זיהוי מצב רגשי (אישי)",w:"B",x:"כל אחד עונה לעצמו, בשקט. לא משתפים עדיין.",l:["הרגש המרכזי שאני נושא/ת עכשיו הוא…","הדבר שהכי מפעיל אותי סביב זה הוא…"],s:60}],
+ round:[{t:"הדובר/ת – שיתוף מתקדם",w:"S",x:"מדברים לפי המבנה. אין בקשות לשינוי בשלב הזה.",l:["יש בי עכשיו רגש של ____.","הוא מופיע בעיקר כש____.","מה שהכי חשוב לי שתקשיב/י לו הוא ____.","אני לא מבקש/ת פתרון כרגע – רק נוכחות."],s:240},
+ {t:"המקשיב/ה – נוכחות פעילה",w:"L",x:"שלושה חלקים, לא יותר מזה:",l:["שיקוף: אני שומע/ת שיש בך ____.","אישור: זה הגיוני שתרגיש/י כך.","נוכחות: אני כאן איתך."],s:60},
+ {t:"ויסות משותף",w:"B",x:"שותקים יחד. נושמים. יושבים באותו מרחב. זה שלב קריטי – המוח לומד שקשר יכול להחזיק רגש.",l:[],s:120}],swap:1,
+ closing:[{t:"סגירה בוגרת",w:"B",x:"כל אחד משלים. לא פותחים נושא חדש.",l:["מה שעזר לי להישאר בקשר היה…","משהו אחד שלמדתי על עצמי בדיבור…"],s:120},
+ {t:"משפט חותם",w:"B",x:"",l:["קשר חזק הוא לא קשר שאין בו רגשות קשים – אלא קשר שיודע להחזיק אותם יחד."],s:0}]}]},
+{t:"קונפליקט בונה",s:"לריב נכון בשפת הקשר",ic:"🕊️",
+ L:{idea:"זוגיות לא נמנעת מקונפליקט – זוגיות מחזיקה קונפליקט.",
+ flow:{h:"מבנה הקונפליקט בשפת הקשר",st:["עובדות","רגש","צורך","בקשה אחראית"]},
+ cards:[{h:"1. אחריות עצמית תמיד",g:"",p:["אני אחראי/ת למה שיוצא מהפה שלי","הדיבור שלי אינו כלי נשק"]},
+ {h:"2. הקשבה פעילה",g:"",p:["לשמוע את הצורך והרגש שמאחורי המילים","לא להסביר, לא לתקן, לא להשיב מיד"]},
+ {h:"3. פריימינג לפני שיחה קשה",g:"",p:["“אני רוצה לדבר על משהו חשוב. אני לא בא/ה כדי לנצח אלא כדי להבין ולהיות מובן/ת.”"]},
+ {h:"להימנע מ…",g:"",p:["האשמה – פותחת הגנה ולא פתרון","העלאת עבר – מפספסת את ההווה","סרקזם וציניות – פוגעים בביטחון","שתיקה ממושכת – יוצרת ניתוק"]}],
+ note:"קונפליקט לא מחייב הפסד – הוא יכול להיות הזדמנות להבנה, קרבה ובנייה."},
+ tool:"build4",
+ P:[{n:"קונפליקט מבוקר",rules:["נושא רגיש אך קטן: חלוקת משימות בית, זמן איכות, טכנולוגיה","עובדה אחת בלבד – ניטרלית, בלי פרשנות","בלי העלאת עבר, בלי ציניות","אין ויכוח נוסף בסוף התרגיל"],
+ pre:[{t:"פריימינג",w:"B",x:"בחרו נושא קטן, ואמרו זה לזה:",l:["אני רוצה לדבר על משהו חשוב. אני לא בא/ה כדי לנצח אלא כדי להבין ולהיות מובן/ת."],s:0}],
+ round:[{t:"שלב 1 – עובדה",w:"S",x:"עובדה אחת בלבד, ניטרלית.",l:["לדוגמה: אתמול לא קיבלתי הודעה ממך במשך שעתיים."],s:60},
+ {t:"שלב 2 – רגש",w:"S",x:"הרגש האמיתי שהעובדה עוררה.",l:["לדוגמה: זה גרם לי להרגיש לבד."],s:60},
+ {t:"שלב 3 – צורך",w:"S",x:"מה הצורך שמאחורי הרגש?",l:["לדוגמה: אני צריך/ה להרגיש מחובר/ת גם כשאני עסוק/ה."],s:60},
+ {t:"שלב 4 – בקשה אחראית",w:"S",x:"מבקשים פעולה ברורה, בלי לדרוש.",l:["לדוגמה: אפשר שנעדכן אחד את השני כשאנחנו עסוקים?"],s:60}],swap:1,
+ closing:[{t:"סיכום",w:"B",x:"כל אחד משלים. אין ויכוח נוסף.",l:["מה שלמדתי על עצמי…","מה שלמדתי עליך…"],s:120}]}]},
+{t:"שיח קרבה",s:"לבנות אינטימיות דרך תקשורת מודעת",ic:"💞",
+ L:{idea:"קשר אינטימי לא נוצר מאהבה בלבד – הוא נבנה דרך דיבור שמקרב ומחבר.",
+ cards:[{h:"1. שיח יום-יומי",g:"שיחות קצרות על היום",p:["“היום הייתי מאוד לחוץ, אבל כששוחחנו זה הרגיע אותי.”"]},
+ {h:"2. שיח הערכה",g:"לא מחכים לאירוע גדול",p:["“אני מעריך/ה שפינית זמן בשבילי היום.”"]},
+ {h:"3. שיח עומק",g:"רגשות, חלומות, פחדים – בשפה אחראית",p:["“כשאתה/את מקשיב/ה, אני מרגיש/ה בטוח/ה לחלוק את המחשבות שלי.”"]},
+ {h:"כלים לקרבה",g:"",p:["אני מרגיש – אני צריך – אני מבקש","שאלות שמקרבות","מחוות מילוליות: “תודה על…”","סיכום שבועי זוגי, 5–10 דקות"]}],
+ note:"שיח קרבה הוא הדבק של הזוגיות. ככל שהוא חזק יותר, הקשר מחזיק גם ברגעי משבר."},
+ tool:"cards",
+ P:[{n:"שיח קרבה יומיומי",rules:["זמן קבוע: 10–15 דקות ביום, בלי הסחות דעת","לא פותרים בעיות בתרגיל הזה","המקשיב/ה עונה רק במשפטי הקשבה"],
+ pre:[{t:"זמן קבוע",w:"B",x:"הניחו טלפונים בצד. שבו קרוב.",l:[],s:0}],
+ round:[{t:"שלושה דברים טובים",w:"S",x:"שלושה דברים חיוביים מהיום – אחד מהם חייב להיות על בן/בת הזוג.",l:["לדוגמה: אני שמח/ה שהכנת את הקפה בבוקר, זה עזר לי להתחיל את היום רגוע/ה."],s:180},
+ {t:"רגש משמעותי אחד",w:"S",x:"רגש אחד מהיום, לפי הנוסחה: עובדה → רגש → משמעות → בקשה.",l:[],s:120},
+ {t:"הקשבה פעילה",w:"L",x:"עונים רק אחד מאלה:",l:["שמעתי אותך","זה מובן לי","אני כאן איתך"],s:0}],swap:1,
+ closing:[{t:"מחווה חיובית",w:"B",x:"כל אחד אומר לשני:",l:["אני מעריך/ה אותך","אני שמח/ה שאנחנו ביחד"],s:0}]}]}
+];
+const QZ_HE=[
+{q:"בן/בת הזוג שכח/ה משהו חשוב לי. מה הכי קרוב למה שאני עושה?",o:["אומר/ת “אתה אף פעם לא זוכר” ומתחיל/ה להאשים","אומר/ת “לא נורא, הכול בסדר” – וסוגר/ת בפנים","אומר/ת מה קשה לי ומבקש/ת לדבר על זה"]},
+{q:"בזמן ריב אני בדרך כלל…",o:["מרים/ה קול ורוצה לנצח","שותק/ת ומתרחק/ת","עוצר/ת, נושם/ת וחוזר/ת לשיחה"]},
+{q:"כשאני נפגע/ת, ההודעה הפנימית שלי היא…",o:["הוא/היא חייב/ת להבין מה עשו לי","עדיף לא ליצור בעיות","אני פגוע/ה, ואני רוצה שנבין את זה ביחד"]},
+{q:"מישהו אומר לי משהו ביקורתי. אני…",o:["מתגונן/ת: זה לא נכון!","אומר/ת “בסדר” ומוותר/ת על עצמי","שואל/ת מה הוא/היא צריך/ה, ומקשיב/ה"]}];
+const QR_HE=[["שפת הישרדות","הקשר שלכם קיים – אבל לעיתים במתח. הבשורה: יש שפה שלישית שאפשר ללמוד."],["שפת הימנעות","הקשר שקט – אבל לעיתים רחוק. הבשורה: יש שפה שלישית שמחזירה קרבה."],["שפת בנייה","אחריות על הדיבור, רגש בלי האשמה, ויכולת להישאר בקושי יחד. המשיכו לחזק אותה!"]];
+const PT_HE=["האשמה","הגנה","נסיגה","הסלמה"],PTX_HE=["צורך להיראות ולהישמע – שמתחפש לביקורת","פחד מאשמה שמונע הקשבה","ניסיון לשמור על עצמי – במחיר הקשר","כאב שלא קיבל מקום – ויוצא בעוצמה"];
+const MQ_HE=[["“אתה תמיד מאחר – אף פעם לא אכפת לך ממני!”",0],["“אתה מגזים. זה בכלל לא קרה ככה, ובכלל זה בגללך.”",1],["“אין לי כוח לדבר על זה עכשיו.” (ויוצא מהחדר)",2],["“די! את משגעת אותי!” (בקול רם)",3],["“כן, בטח, אתה מושלם. תמשיך ככה.”",3]];
+const BD_HE={build3:{f:[["עובדה","כשלא חזרת אליי אתמול"],["רגש","הרגשתי לבד"],["משמעות","זה גרם לי להרגיש לא חשוב/ה"],["בקשה","אני מבקש/ת שנעדכן אחד את השני"]],h:"בונים משפט לפי הנוסחה: עובדה → רגש → משמעות → בקשה. בחרו מצב יומיומי קטן."},
+build4:{f:[["עובדה","אתמול לא קיבלתי הודעה ממך במשך שעתיים"],["רגש","זה גרם לי להרגיש לבד"],["צורך","אני צריך/ה להרגיש מחובר/ת גם כשאני עסוק/ה"],["בקשה","אפשר שנעדכן אחד את השני כשאנחנו עסוקים?"]],h:"בונים קונפליקט בשפת הקשר: עובדה → רגש → צורך → בקשה אחראית. בחרו נושא קטן."}};
+const CV_HE=[["אתה אף פעם לא…","קשה לי כש…"],["לא אכפת לך","אני צריך/ה יותר…"],["אתה מגזים","אני חווה את זה אחרת"],["עזוב, אין טעם","אני כן רוצה לדבר, אבל צריך רגע"]];
+const CD_HE=["מה גרם לך היום להרגיש שמח/ה?","מה הרגע הכי משמעותי שחווינו ביחד בשבוע האחרון?","אמרו תודה על דבר קטן שבן/בת הזוג עשה השבוע: “תודה על…”","השלימו: “אני מעריך/ה ש…”","שתפו שלושה דברים חיוביים מהיום – אחד מהם על בן/בת הזוג.","השלימו: “כשאתה/את מקשיב/ה, אני מרגיש/ה בטוח/ה לחלוק…”","אמרו, עם מבט בעיניים: “אני שמח/ה שאתה/את כאן”.","שתפו רגש אחד מהיום: אני מרגיש/ה – אני צריך/ה – אני מבקש/ת.","איזה חלום קטן יש לך שעוד לא סיפרת לי עליו?","איזו הצלחה קטנה שלך מהשבוע הייתי רוצה לחגוג איתך?"];
+
+M_HE.push({t:"מרחב אינטימי – אהבה, תשוקה ויצר",s:"שלב פרמיום · קלפי שאלות לזוג",ic:"🔥",tool:"prem",P:[]});
+const PRM_HE={rules:["שאלה מהלב – שולפים קלף ושואלים את בן/בת הזוג מתוך סקרנות אמיתית.","תשובה כנה ואמיתית לחלוטין – בלי לייפות ובלי למהר.","הקשבה בנוכחות מלאה – בלי שיפוט, בלי תיקון, בלי “אבל”.","תמיד אפשר לדלג על קלף – הסכמה ונוחות הדדית קודמות לכול."],
+q:["מה הדבר בי שהכי מושך אותך וגורם לך לרצות להתקרב אליי?","איזה רגע אינטימי שלנו מעלה בך חום וחשק בכל פעם שאת/ה נזכר/ת בו?","מה היית רוצה שנעשה יחד הלילה שעוד לא העזת לבקש?","מה מדליק אצלך את היצר והסקרנות בקשר שלנו?","באיזה סוג של מגע אתה/את הכי נמס/ה?","איך הכי נעים לך שאפתח ערב רומנטי – במילים, במבט או במגע?","מתי בפעם האחרונה הסתכלת עליי והרגשת משיכה מחודשת? מה ראית?","איזו מילה או משפט שלי גורמים לך להרגיש רצוי/ה?","איפה אתה/את הכי אוהב/ת שאגע בך, ואיזה קצב נעים לך?","איזו פנטזיה רומנטית קטנה – מקום, אווירה, ריח – היית רוצה שניצור יחד?","מה גורם לך להרגיש בטוח/ה מספיק כדי להתמסר לגמרי?","איזה זיכרון מהתקופה הראשונה שלנו עדיין מדליק אותך?","איך אפשר להצית מחדש את הניצוץ באמצע שבוע עמוס?","מה היית רוצה שאעשה יותר – משהו שאולי אני לא יודע/ת שאתה/את מחכה לו?","איזה לבוש או מראה שלי גורם לך להסתכל פעמיים?","כשאנחנו מתקרבים – מה יוצר אצלך את תחושת החיבור העמוקה ביותר?","מהו הדבר הכי מרגש שחווית איתי, בגוף ובנשמה יחד?","מה הרצון שלך ללילה הבא שלנו, במשפט אחד כנה?"]};
+const M_EN=[
+{t:"Recognizing Our Relationship Language",s:"From automatic talk to conscious dialogue",ic:"🔍",
+ L:{idea:"We don’t speak the way we think we speak – we speak the way we learned to survive in a relationship.",
+ cards:[{h:"🛡️ Survival Language",g:"The relationship exists – but under constant tension",p:["Blame, criticism, defensiveness","Silence or outbursts","A need to “win” the conversation"]},
+ {h:"🌫️ Avoidance Language",g:"A quiet relationship – but a distant one",p:["“Everything’s fine” when it isn’t","Giving myself up to keep the peace","Fear of conflict"]},
+ {h:"🌱 Building Language",g:"A living relationship – one that grows",p:["Taking responsibility for my words","Expressing feelings without blame","Staying with difficulty together"]}],
+ note:"What is said is not what is heard. We hear threats, not words. It isn’t unwillingness to listen – it’s a language that hasn’t been decoded. Most couples swing between survival and avoidance without knowing there is a third language."},
+ tool:"quiz",
+ P:[{n:"Hear the Language – Without Reacting",rules:["No arguing","No fixing","No emotional reacting","No “but”","No interpreting","This isn’t a conversation – it’s listening practice"],
+ round:[{t:"The Speaker – Mindful Speech",w:"S",x:"Answer out loud, one after another, without stopping. No blaming – speak only about yourself.",l:["When things get hard between us, I usually react with ________","In tense moments, the language that comes out of me is usually…","The hardest thing for me to say in our relationship is…","When I don’t feel heard, I tend to…"],s:300},
+ {t:"The Listener – Silent Listening",w:"L",x:"Don’t react, fix, explain or defend. Just quietly ask yourself:",l:["Which relationship language do I hear here? Survival / Avoidance / Building"],s:0},
+ {t:"Minimal Reflection",w:"L",x:"One sentence only, in exactly this format. Add nothing – no “that’s because…” and no “and I also…”",l:["What I heard is that when things are hard for you, your language tends toward ________."],s:60}],swap:1,
+ closing:[{t:"Closing Together",w:"B",x:"Each of you completes, in turn. Don’t open a conversation beyond this.",l:["The thing that surprised me most was…","One thing I learned about our relationship language…"],s:180},
+ {t:"The Key Sentence",w:"B",x:"Say it together:",l:["Today we didn’t fix anything – but we started to see. And from here, we can build."],s:0}]}]},
+{t:"Speech Patterns That Create Distance",s:"Recognize, pause, and stop hurting without meaning to",ic:"🌀",
+ L:{idea:"In a relationship we don’t respond to what was said – but to what it triggers in us.",
+ cards:[{h:"1. The Blame Pattern",g:"“You always / you never”",p:["Generalizing and criticizing","Putting responsibility on the other","What’s really happening: a need to be seen and heard, disguised as criticism"]},
+ {h:"2. The Defense Pattern",g:"“That’s not true / you’re exaggerating / it’s your fault”",p:["Justifying and explaining","Dismissing the other’s experience","What’s really happening: fear of blame that blocks listening"]},
+ {h:"3. The Withdrawal Pattern",g:"Silence, distance, shutting down",p:["Avoiding the conversation, “I have no energy”","Emotional freezing","What’s really happening: protecting myself – at the cost of the relationship"]},
+ {h:"4. The Escalation Pattern",g:"Raised voices, sarcasm, explosions",p:["Extreme reactions and sharp tones","Losing boundaries in speech","What’s really happening: pain that wasn’t given room – and comes out with force"]}],
+ flow:{h:"The couple’s cycle – one pattern triggers another",st:["Blame","Defense","Escalation","Withdrawal"],loop:1},
+ note:"Once a pattern is recognized, it stops being “us”. A relationship doesn’t need perfect people – it needs people who recognize what drives them."},
+ tool:"match",
+ P:[{n:"Recognize the Pattern – Without Blaming",rules:["Speak about my pattern – not my partner’s","No examples and no stories","Not “you start it” – but “this is our cycle”"],
+ pre:[{t:"Personal Choice",w:"B",x:"Each of you quietly picks one pattern you recognize in yourself – not in your partner: blame, defense, withdrawal or escalation.",l:[],s:60}],
+ round:[{t:"Protected Sharing",w:"S",x:"Say one sentence, filling in the blanks:",l:["When I feel ______, the pattern that tends to come out of me is ______."],s:60},
+ {t:"Listening and Reflecting",w:"L",x:"Answer with just one phrase – and that’s all:",l:["I heard you."],s:0}],swap:1,
+ closing:[{t:"Shared Recognition",w:"B",x:"Complete together:",l:["The cycle we recognize between us is ______."],s:120}]}]},
+{t:"Responsible Communication",s:"Speaking myself without hurting the relationship",ic:"🗣️",
+ L:{idea:"My feeling is real – but the responsibility for how I express it is mine.",
+ flow:{h:"The Relationship Language Formula",st:["Fact","Feeling","Meaning","Request"]},
+ cards:[{h:"1. Owning the feeling",g:"",p:["Not: “You make me feel…”","Yes: “When ____ happens, I feel ____.”"]},
+ {h:"2. Separating feeling from request",g:"",p:["A feeling is mine.","A request is an invitation – not a demand."]},
+ {h:"3. Tone before content",g:"",p:["The same sentence, in a different tone, creates a different reality."]}],
+ note:"Not every truth must be said right away, but every truth should be said well. This isn’t a technical formula – it’s a mature language."},
+ tool:"build3",
+ P:[{n:"Talk Feelings – Without Blaming",rules:["Choose a small, everyday topic – not a big conflict","The speaker follows the formula, no deviations","The listener: no solutions and no explanations"],
+ round:[{t:"The Speaker – By the Formula",w:"S",x:"Pick a small everyday topic and share through the four steps:",l:["Fact: When ____ happened","Feeling: I felt ____","Meaning: It made me feel ____","Request: I’m asking ____"],s:180},
+ {t:"The Listener – A Relationship-Language Response",w:"L",x:"Answer only:",l:["I heard you. It makes sense that you feel this way."],s:0}],swap:1,
+ closing:[{t:"Closing Sentence",w:"B",x:"",l:["Responsible communication isn’t giving up on myself – it’s a way to protect both me and the relationship."],s:0}]},
+ {n:"Advanced Practice – Staying Connected When It’s Hard",rules:["Choose a calm time – not during a fight","Agree in advance on 15–20 minutes","Agree to stop if either of you gets overwhelmed","This isn’t for solving problems – it’s for protecting the connection"],
+ pre:[{t:"Naming Your Emotional State (Personal)",w:"B",x:"Each of you answers silently, for yourself. Don’t share yet.",l:["The main feeling I’m carrying right now is…","What triggers me most about it is…"],s:60}],
+ round:[{t:"The Speaker – Advanced Sharing",w:"S",x:"Speak using the structure. No requests for change at this stage.",l:["Right now there’s a feeling of ____ in me.","It shows up mostly when ____.","What matters most to me is that you listen to ____.","I’m not asking for a solution right now – only presence."],s:240},
+ {t:"The Listener – Active Presence",w:"L",x:"Three parts, no more than that:",l:["Reflecting: I hear that there’s ____ in you.","Validating: It makes sense that you feel this way.","Presence: I’m here with you."],s:60},
+ {t:"Shared Regulation",w:"B",x:"Sit in silence together. Breathe. Share the same space. This is a critical step – the brain learns that a relationship can hold emotion.",l:[],s:120}],swap:1,
+ closing:[{t:"A Mature Closing",w:"B",x:"Each of you completes. Don’t open a new topic.",l:["What helped me stay connected was…","One thing I learned about myself while speaking…"],s:120},
+ {t:"Closing Sentence",w:"B",x:"",l:["A strong relationship isn’t one without hard feelings – it’s one that knows how to hold them together."],s:0}]}]},
+{t:"Constructive Conflict",s:"How to argue well in the language of connection",ic:"🕊️",
+ L:{idea:"A relationship doesn’t avoid conflict – a relationship holds conflict.",
+ flow:{h:"The Conflict Structure",st:["Facts","Feeling","Need","Responsible request"]},
+ cards:[{h:"1. Self-responsibility, always",g:"",p:["I’m responsible for what comes out of my mouth","My speech is not a weapon"]},
+ {h:"2. Active listening",g:"",p:["Hear the need and feeling behind the words","Don’t explain, fix, or answer right away"]},
+ {h:"3. Framing before a hard talk",g:"",p:["“I want to talk about something important. I’m not here to win but to understand and be understood.”"]},
+ {h:"Avoid…",g:"",p:["Blame – triggers defense, not solutions","Dragging up the past – misses the present","Sarcasm and cynicism – damage security","Prolonged silence – creates disconnection"]}],
+ note:"Conflict doesn’t have to mean loss – it can be an opportunity for understanding, closeness and building."},
+ tool:"build4",
+ P:[{n:"Controlled Conflict",rules:["A sensitive but small topic: sharing chores, quality time, technology","One fact only – neutral, no interpretation","No dredging up the past, no sarcasm","No further arguing at the end of the exercise"],
+ pre:[{t:"Framing",w:"B",x:"Pick a small topic, and say to each other:",l:["I want to talk about something important. I’m not here to win but to understand and be understood."],s:0}],
+ round:[{t:"Step 1 – Fact",w:"S",x:"One fact only, neutral.",l:["For example: Yesterday I didn’t get a message from you for two hours."],s:60},
+ {t:"Step 2 – Feeling",w:"S",x:"The real feeling the fact brought up.",l:["For example: It made me feel alone."],s:60},
+ {t:"Step 3 – Need",w:"S",x:"What need sits behind the feeling?",l:["For example: I need to feel connected even when I’m busy."],s:60},
+ {t:"Step 4 – Responsible Request",w:"S",x:"Ask for a clear action, without demanding.",l:["For example: Can we check in with each other when we’re busy?"],s:60}],swap:1,
+ closing:[{t:"Summary",w:"B",x:"Each of you completes. No further arguing.",l:["What I learned about myself…","What I learned about you…"],s:120}]}]},
+{t:"Closeness Talk",s:"Building intimacy through mindful communication",ic:"💞",
+ L:{idea:"Intimacy isn’t created by love alone – it’s built through speech that connects and draws us closer.",
+ cards:[{h:"1. Everyday talk",g:"Short conversations about the day",p:["“I was really stressed today, but talking with you calmed me down.”"]},
+ {h:"2. Appreciation talk",g:"Don’t wait for a big occasion",p:["“I appreciate that you made time for me today.”"]},
+ {h:"3. Deep talk",g:"Feelings, dreams, fears – in responsible language",p:["“When you listen, I feel safe sharing my thoughts.”"]},
+ {h:"Tools for closeness",g:"",p:["I feel – I need – I ask","Questions that bring us closer","Verbal gestures: “Thank you for…”","A weekly couple’s check-in, 5–10 minutes"]}],
+ note:"Closeness talk is the glue of a relationship. The stronger it is, the better the bond holds even in a crisis."},
+ tool:"cards",
+ P:[{n:"Everyday Closeness Talk",rules:["A fixed time: 10–15 minutes a day, no distractions","We don’t solve problems in this exercise","The listener answers only with listening phrases"],
+ pre:[{t:"A Fixed Time",w:"B",x:"Put your phones aside. Sit close.",l:[],s:0}],
+ round:[{t:"Three Good Things",w:"S",x:"Three positive things from today – one of them must be about your partner.",l:["For example: I’m glad you made the coffee this morning – it helped me start the day calm."],s:180},
+ {t:"One Meaningful Feeling",w:"S",x:"One feeling from today, using the formula: fact → feeling → meaning → request.",l:[],s:120},
+ {t:"Active Listening",w:"L",x:"Answer with just one of these:",l:["I hear you","I understand","I’m here with you"],s:0}],swap:1,
+ closing:[{t:"A Positive Gesture",w:"B",x:"Each of you says to the other:",l:["I appreciate you","I’m glad we’re together"],s:0}]}]},
+{t:"The Intimate Space – Love, Passion & Desire",s:"Premium step · couple’s question cards",ic:"🔥",tool:"prem",P:[]}];
+const PRM_EN={rules:["A question from the heart – draw a card and ask your partner out of real curiosity.","A completely honest, true answer – no embellishing, no rushing.","Listen with full presence – no judgment, no fixing, no “but”.","You can always skip a card – mutual consent and comfort come first."],
+q:["What is it about me that attracts you most and makes you want to come closer?","Which intimate moment of ours warms you and stirs desire whenever you remember it?","What would you like us to do together tonight that you haven’t dared to ask for yet?","What ignites your passion and curiosity in our relationship?","What kind of touch makes you melt the most?","How do you like me to open a romantic evening – with words, a look, or a touch?","When was the last time you looked at me and felt a fresh pull? What did you see?","Which word or phrase from me makes you feel desired?","Where do you love being touched most, and what pace feels good to you?","What small romantic fantasy – a place, a mood, a scent – would you like us to create together?","What makes you feel safe enough to surrender completely?","Which memory from our early days still turns you on?","How could we reignite the spark in the middle of a busy week?","What would you like me to do more of – something you may be waiting for that I don’t know about?","Which outfit or look of mine makes you look twice?","When we grow close, what creates your deepest sense of connection?","What’s the most moving thing you’ve experienced with me, body and soul together?","What do you wish for our next night together, in one honest sentence?"]};
+const QZ_EN=[
+{q:"My partner forgot something important to me. What’s closest to what I do?",o:["Say “you never remember” and start blaming","Say “it’s fine, no big deal” – and close up inside","Say what’s hard for me and ask to talk about it"]},
+{q:"During an argument I usually…",o:["Raise my voice and want to win","Go quiet and pull away","Pause, breathe, and come back to the conversation"]},
+{q:"When I’m hurt, my inner message is…",o:["They have to understand what they did to me","Better not to make trouble","I’m hurt, and I want us to understand it together"]},
+{q:"Someone says something critical to me. I…",o:["Get defensive: that’s not true!","Say “okay” and give myself up","Ask what they need, and listen"]}];
+const QR_EN=[["Survival Language","Your relationship is alive – but sometimes under tension. The good news: there’s a third language you can learn."],["Avoidance Language","The relationship is quiet – but sometimes distant. The good news: there’s a third language that brings closeness back."],["Building Language","Responsibility for your words, feelings without blame, and the ability to stay with difficulty. Keep strengthening it!"]];
+const PT_EN=["Blame","Defense","Withdrawal","Escalation"],PTX_EN=["A need to be seen and heard, disguised as criticism","Fear of blame that blocks listening","Protecting myself – at the cost of the relationship","Pain that wasn’t given room – and comes out with force"];
+const MQ_EN=[["“You’re always late – you never care about me!”",0],["“You’re exaggerating. That’s not how it happened, and anyway it’s your fault.”",1],["“I don’t have the energy to talk about this now.” (and leaves the room)",2],["“Enough! You’re driving me crazy!” (loudly)",3],["“Oh sure, you’re perfect. Keep it up.”",3]];
+const BD_EN={build3:{f:[["Fact","When you didn’t get back to me yesterday"],["Feeling","I felt alone"],["Meaning","It made me feel unimportant"],["Request","I’m asking that we keep each other posted"]],h:"Build a sentence using the formula: Fact → Feeling → Meaning → Request. Pick a small everyday situation."},
+build4:{f:[["Fact","Yesterday I didn’t get a message from you for two hours"],["Feeling","It made me feel alone"],["Need","I need to feel connected even when I’m busy"],["Request","Can we check in with each other when we’re busy?"]],h:"Build a conflict in relationship language: Fact → Feeling → Need → Responsible request. Pick a small topic."}};
+const CV_EN=[["You never…","It’s hard for me when…"],["You don’t care","I need more…"],["You’re exaggerating","I experience it differently"],["Forget it, what’s the point","I do want to talk – I just need a moment"]];
+const CD_EN=["What made you feel happy today?","What was the most meaningful moment we shared this past week?","Say thank you for one small thing your partner did this week: “Thank you for…”","Complete: “I appreciate that…”","Share three positive things from today – one of them about your partner.","Complete: “When you listen, I feel safe sharing…”","Say, looking into each other’s eyes: “I’m glad you’re here.”","Share one feeling from today: I feel – I need – I ask.","What small dream do you have that you haven’t told me about yet?","What small win of yours this week would I love to celebrate with you?"];
+PRM_HE.q.push("מהו המקום הכי מפתיע בגוף שלי שאתה/את אוהב/ת להסתכל עליו?","איזו מחמאה שקיבלת ממני עדיין מחממת אותך?","מה היית רוצה שאלחש לך באוזן?","איזה ריח שלי גורם לך לרצות להתקרב?","איך נראה הערב המושלם שלנו – כזה שמתחיל בנשיקה?","מתי הרגשת הכי נחשק/ת איתי?","איזה שיר גורם לך לחשוב עליי בצורה חושנית?","מהי הנשיקה הכי בלתי נשכחת שלנו, ולמה?","איזו מילה אחת מתארת איך אתה/את מרגיש/ה כשאני מחבק/ת אותך חזק?","מה הכי מרגש אותך כשאני לוקח/ת יוזמה?","ומה הכי מרגש אותך כשאתה/את לוקח/ת יוזמה?","איזה מקום, בבית או מחוצה לו, מעורר בך אווירה רומנטית?","מה היית רוצה שאעשה לפני שנרדמים הלילה?","איזה מגע קטן ביום-יום גורם לך להרגיש אהוב/ה?","איזו הפתעה רומנטית היית רוצה לקבל ממני?","מתי אתה/את מרגיש/ה הכי יפה או נאה בעיניי?","מה היית רוצה לחדש באווירה בחדר שלנו – תאורה, מוזיקה, ריח?","איזה רגע של שקט וקרבה בינינו אתה/את הכי אוהב/ת?","מה אני עושה בלי לשים לב שמדליק אותך?","איך הכי טוב לך להתעורר לידי?","איזה מבט בינינו עדיין עושה לך פרפרים?","מה הדבר הכי נועז-רומנטי שהיית שמח/ה לנסות איתי?","מה קורה לך בגוף כשאני מתקרב/ת אליך לאט?","איזה סוג נשיקה הכי מדליק אותך?","מה היית רוצה שאגיד לך כשאנחנו לבד, ושאני לא אומר/ת מספיק?","איזה סוג חיבוק הכי נעים לך?","על מה היית רוצה שנקדיש עוד זמן באינטימיות שלנו?","מה הופך בעינייך רגע רגיל לרגע רומנטי?","איך אפשר לגרום לך להרגיש מפונק/ת הערב?","איזה חלק בשבוע הכי מתאים לך לרגע אינטימי, ולמה?","מה היית רוצה לשמוע ממני לפני שנכנסים למיטה?","מה הכי מחבר אותך אליי – גוף, מילים או מבט?");
+PRM_HE.d=["נשק/י לי את השפתיים בעדינות רכה במשך 10 שניות.","לחש/י לי באוזן שלוש מילים שאת/ה הכי אוהב/ת בי.","תן/י לי חיבוק איטי ועמוק של 20 שניות, בלי לדבר.","הסתכל/י לי בעיניים 30 שניות בשקט, בלי לצחוק.","נשק/י לי את כף היד, ואחר כך את הלחי, לאט.","עשה/י לי עיסוי כתפיים רך במשך דקה.","ספר/י לי מה אהבת בי היום, ואחרי כל משפט תן/י לי נשיקה קטנה.","רקוד/י איתי ריקוד איטי לאורך שיר אחד.","ליטוף עדין על הפנים שלי במשך 15 שניות, בעיניים עצומות.","אמור/י לי משפט שמעלה לך חיוך – ואז נשק/י לי על המצח.","החזק/י את היד שלי ונשק/י לי על כל אצבע.","תאר/י לי במילים רכות את הרגע שבו התאהבת בי.","הניח/י את הראש על החזה שלי והקשב/י לדופק שלי 20 שניות.","נשק/י לי ליד האוזן בעדינות ואמור/י “אני כאן בשבילך”.","עשה/י לי עיסוי עדין בכפות הידיים – דקה לכל יד.","שלח/י לי נשיקה באוויר, ואחרי 5 שניות של מבט תן/י לי אחת אמיתית.","עמוד/י מולי והניח/י לי לחבק אותך מאחור 20 שניות.","לחש/י לי באוזן איך אתה/את מתכוון/ת להפתיע אותי השבוע.","העבר/י אצבע בעדינות לאורך הזרוע שלי, מהכתף ועד כף היד.","אמור/י לי שלוש מחמאות על המראה שלי – בלי להסס.","שב/י מולי, ברכיים נוגעות, והחזק/י לי את הידיים דקה בשקט.","נשק/י לי את הלחי ואז את פינת השפתיים, לאט.","העבר/י את היד בשיער שלי בעדינות במשך 15 שניות.","אמור/י לי בקול חם ורך את המשפט שהכי מחמם אותך להגיד לי.","תן/י לי נשיקה אחת ארוכה ורכה – אתה/את קובע/ת כמה זמן.","חבק/י אותי עד ששנינו נושמים באותו קצב.","ספר/י לי על רגע בינינו שעדיין מעביר בך חום, ואז נשק/י לי.","עשה/י לי עיסוי קטן בעורף במשך 30 שניות.","עצום/י עיניים, ואני אנשק אותך במקום אחד בפנים – נחש/י איפה.","הוביל/י את היד שלי למגע שנעים לך – כתף, גב או פנים – ואני אשאר שם 20 שניות.","נשק/י לי את הצוואר בעדינות במשך 10 שניות.","תאר/י לי בלחש ערב רומנטי שהיית רוצה שנחווה השבוע.","דמיין/י שזה הדייט הראשון שלנו: הצג/י את עצמך מחדש, ונשק/י לי את היד.","שב/י לידי, הנח/י לי להניח את הראש בחיקך, וספר/י לי על חלום יפה.","עשה/י לי עיסוי קל בגב העליון במשך 40 שניות.","תן/י לי נשיקה על המצח, אחת על האף ואחת על השפתיים.","אמור/י לי שלושה דברים שאתה/את רוצה שנעשה יחד השנה, ונשק/י לי אחרי כל אחד.","החזק/י אותי קרוב ואמור/י לי בלחש שאתה/את אוהב/ת אותי.","שיר אחד, חיבוק אחד: התנדנדו יחד עד שהשיר נגמר.","הכן/י לי משהו קטן לשתות או לאכול, והגש/י אותו בצורה רומנטית.","נשק/י לי את הצד הפנימי של פרק כף היד.","הבט/י בעיניי ואמור/י לי למה אתה/את בוחר/ת בי שוב כל יום.","נשק/י לי באיטיות בפינת הפה, ואז במרכז.","כתוב/י עם האצבע מילה אוהבת על הגב שלי, ואני אנחש מה כתוב.","קבע/י איתי “פגישה אינטימית” לשבוע הקרוב – יום, שעה ואווירה.","אמור/י לי מה גורם לך להרגיש הכי בבית בזרועות שלי, ואז תן/י לי נשיקה ארוכה.","נשיקה ארוכה של 30 שניות – ואז לחש/י לי מה הרגשת."];
+PRM_EN.q.push("What’s the most surprising part of me that you love looking at?","Which compliment from me still warms you?","What would you like me to whisper in your ear?","Which of my scents makes you want to come closer?","What does our perfect evening look like – one that begins with a kiss?","When did you feel most desired with me?","Which song makes you think of me in a sensual way?","What’s our most unforgettable kiss, and why?","Which single word describes how you feel when I hold you tight?","What excites you most when I take the initiative?","And what excites you most when you take the initiative?","Which place, at home or away, sets a romantic mood for you?","What would you like me to do before we fall asleep tonight?","Which small everyday touch makes you feel loved?","What romantic surprise would you love to get from me?","When do you feel most beautiful or handsome in my eyes?","What would you like to refresh in the mood of our bedroom – lighting, music, scent?","Which quiet, close moment between us do you love most?","What do I do without noticing that turns you on?","How do you like to wake up next to me?","Which look between us still gives you butterflies?","What’s the boldest romantic thing you’d be happy to try with me?","What happens in your body when I slowly move toward you?","Which kind of kiss turns you on most?","What would you like me to say when we’re alone, that I don’t say enough?","What kind of hug feels best to you?","What would you like us to spend more time on in our intimacy?","What turns an ordinary moment into a romantic one for you?","How can I make you feel pampered tonight?","Which part of the week suits you best for an intimate moment, and why?","What would you like to hear from me before we go to bed?","What connects you to me most – body, words, or a look?");
+PRM_EN.d=["Kiss me on the lips, gently and softly, for 10 seconds.","Whisper in my ear three things you love about me.","Give me a slow, deep hug for 20 seconds, without speaking.","Look into my eyes in silence for 30 seconds, without laughing.","Kiss my palm, then my cheek, slowly.","Give me a gentle shoulder massage for one minute.","Tell me what you loved about me today, and after each sentence give me a small kiss.","Dance a slow dance with me for one whole song.","Gently stroke my face for 15 seconds while I close my eyes.","Say a sentence that makes you smile – then kiss my forehead.","Hold my hand and kiss each of my fingers.","Describe to me, in soft words, the moment you fell in love with me.","Rest your head on my chest and listen to my heartbeat for 20 seconds.","Kiss me softly near the ear and say “I’m here for you.”","Give me a gentle hand massage – one minute for each hand.","Blow me a kiss, and after 5 seconds of eye contact give me a real one.","Stand in front of me and let me hug you from behind for 20 seconds.","Whisper in my ear how you plan to surprise me this week.","Run a finger gently along my arm, from shoulder to hand.","Tell me three compliments about how I look – without hesitating.","Sit facing me, knees touching, and hold my hands in silence for a minute.","Kiss my cheek, then the corner of my lips, slowly.","Run your hand gently through my hair for 15 seconds.","Say to me, in a warm, soft voice, the sentence that warms you most to say to me.","Give me one long, soft kiss – you decide how long.","Hold me until we’re both breathing at the same rhythm.","Tell me about a moment between us that still sends warmth through you, then kiss me.","Give me a little neck massage for 30 seconds.","Close your eyes, and I’ll kiss you in one spot on your face – guess where.","Guide my hand to a touch that feels good to you – shoulder, back or face – and I’ll stay there for 20 seconds.","Kiss my neck gently for 10 seconds.","Whisper to me a romantic evening you’d like us to have this week.","Imagine it’s our first date: introduce yourself again, and kiss my hand.","Sit next to me, let me rest my head in your lap, and tell me about a beautiful dream.","Give me a light massage on my upper back for 40 seconds.","Give me a kiss on the forehead, one on the nose and one on the lips.","Tell me three things you want us to do together this year, and kiss me after each one.","Hold me close and whisper that you love me.","One song, one embrace: sway together until the song ends.","Prepare me something small to drink or eat, and serve it romantically.","Kiss the inside of my wrist.","Look into my eyes and tell me why you choose me again every day.","Kiss me slowly at the corner of my mouth, then in the center.","Write a loving word on my back with your finger, and I’ll guess what it says.","Set up an “intimate date” with me for the coming week – day, time and mood.","Tell me what makes you feel most at home in my arms, then give me a long kiss.","One long 30-second kiss – then whisper to me what you felt."];
+PRM_HE.d.push("נשק/י לי את הכתף בעדינות, ואז אמור/י תודה על משהו קטן שעשיתי עבורך.","עצום/י עיניים ותן/י לי לומר לך שלוש מחמאות בלחש.","החזק/י לי את הפנים בשתי ידיים ונשק/י לי על האף ועל המצח, ואז על השפתיים.");
+PRM_EN.d.push("Kiss my shoulder gently, then thank me for something small I did for you.","Close your eyes and let me whisper three compliments to you.","Hold my face in both hands and kiss my nose and forehead, then my lips.");
+const DATA={he:{M:M_HE,QZ:QZ_HE,QR:QR_HE,PT:PT_HE,PTX:PTX_HE,MQ:MQ_HE,BD:BD_HE,CV:CV_HE,CD:CD_HE,PRM:PRM_HE},en:{M:M_EN,QZ:QZ_EN,QR:QR_EN,PT:PT_EN,PTX:PTX_EN,MQ:MQ_EN,BD:BD_EN,CV:CV_EN,CD:CD_EN,PRM:PRM_EN}};
+const PAY_URL="";/* TODO: paste your external checkout link here */
+const ACCESS_CODE="2026";/* demo code – client-side only */
+const fresh=()=>({names:["",""],done:{},q:null,v:"splash",m:0,tab:"L",lang:"he",full:0,modal:null,err:"",user:null,partner:null,mode:null,room:null,me:0,status:"",aboutSeen:0,paidBy:"",pick:null,au:{step:"phone",err:"",name:"",phone:""},chat:[],chatOpen:0,chatAs:0,seenTs:0,invite:null,payer:0,pend:0});
+let S=fresh();
+let M,QZ,QR,PT,PTX,MQ,BD,CV,CD,PRM;
+const SK=["names","done","q","lang","full","user","mode","room","me","status","aboutSeen","paidBy","partner","seenTs"];
+try{const x=JSON.parse(localStorage.getItem("shk")||"{}");SK.forEach(k=>{if(x[k]!=null)S[k]=x[k]})}catch(e){}
+const save=()=>{try{const o={};SK.forEach(k=>o[k]=S[k]);localStorage.setItem("shk",JSON.stringify(o))}catch(e){}};
+const X=(h,e)=>S.lang=="he"?h:e,NX=()=>X("←","→"),BK=()=>X("→","←");
+function setL(){const d=DATA[S.lang];({M,QZ,QR,PT,PTX,MQ,BD,CV,CD,PRM}=d);document.documentElement.lang=S.lang;document.documentElement.dir=S.lang=="he"?"rtl":"ltr"}
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const TK=i=>i<5?["L","T","P"]:["G"];
+const D=(m,k)=>!!(S.done[m]&&S.done[m][k]);
+const fin=m=>TK(m).every(k=>D(m,k));
+const unlocked=m=>m==0||(fin(m-1)&&S.full);
+const total=()=>M.reduce((a,_,i)=>a+TK(i).filter(k=>D(i,k)).length,0);
+const TOT=16;
+function mark(m,k){S.done[m]=S.done[m]||{};S.done[m][k]=1;save();}
+let Q={i:0,sc:[0,0,0]},MT={i:0,sel:null,ok:0},BV={},CS={pos:0,order:null},G={order:null,pos:0},P=null,T={left:0,run:0,iv:null};
+
+
+
+
+
+function closeM(){S.modal=null;S.err="";render()}
+
+
+
+
+function endP(){const m=S.m;mark(m,"P");go("map");if(m==0&&!S.full)openPay()}
+
+function langBar(){return `<div class="lang"><button class="${S.lang=="he"?"on":""}" onclick="setLang('he')">עברית</button><button class="${S.lang=="en"?"on":""}" onclick="setLang('en')">English</button></div>`}
+
+
+
+
+
+function lesson(m){
+ const L=m.L;
+ const fl=L.flow?`<div class="card"><h3 class="cen">${L.flow.h}</h3><div class="flow" style="margin-top:12px">${L.flow.st.map((s,i)=>`${i?`<em>${NX()}</em>`:""}<span>${s}</span>`).join("")}${L.flow.loop?"<em>↺</em>":""}</div></div>`:"";
+ return `<div class="card quote">${L.idea}</div>${fl}<div class="grid">${L.cards.map((c,i)=>`<div class="card lc" style="--c:${COL[i%4]}"><h3>${c.h}</h3>${c.g?`<div class="tag">${c.g}</div>`:""}<ul>${c.p.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("")}</div>
+ <div class="card">${L.note}</div>
+ <div class="cen"><button class="btn" onclick="mark(${S.m},'L');go('mod',${S.m},'T')">${X("הבנו – ממשיכים לכלי","Got it – on to the tool")} ${NX()}</button></div>`;
+}
+function tool(m){const k=m.tool;if(k=="quiz")return quiz();if(k=="match")return match();if(k=="cards")return cards();return builder(k)}
+function quiz(){
+ if(Q.i>=QZ.length){const r=Q.sc.indexOf(Math.max(...Q.sc));S.q=r;mark(0,"T");save();
+  return `<div class="card cen"><p class="mut">${X("השפה שפועלת בך עכשיו","The language working in you now")}</p><h2 class="big">${QR[r][0]}</h2><p>${QR[r][1]}</p><p class="mut">${X("זו תמונת מצב, לא שיפוט: אי אפשר לשנות שפה שלא מזהים. מודעות היא תחילתה של בחירה.","This is a snapshot, not a judgment: you can’t change a language you don’t recognize. Awareness is the beginning of choice.")}</p></div>
+  <div class="cen"><button class="btn ghost" onclick="Q={i:0,sc:[0,0,0]};render()">${X("שוב","Again")}</button> <button class="btn" onclick="go('mod',0,'P')">${X("לתרגול הזוגי","To the couple practice")} ${NX()}</button></div>`}
+ const q=QZ[Q.i];
+ return `<div class="card"><p class="mut">${X("איזו שפה פועלת בי?","Which language is working in me?")} · ${X("שאלה","Question")} ${Q.i+1} ${X("מתוך","of")} ${QZ.length}</p><h3>${q.q}</h3>${q.o.map((o,i)=>`<button class="opt" onclick="Q.sc[${i}]++;Q.i++;render()">${o}</button>`).join("")}<p class="mut">${X("עונים בכנות, בלי שיפוט – וכל אחד בנפרד.","Answer honestly, without judgment – each of you separately.")}</p></div>`;
+}
+function match(){
+ if(MT.i>=MQ.length){mark(1,"T");save();return `<div class="card cen"><h2>${X(`זיהיתם ${MT.ok} מתוך ${MQ.length} 🎯`,`You spotted ${MT.ok} of ${MQ.length} 🎯`)}</h2><p>${X("הדפוס הוא לא “מי אתה” – אלא “מה קורה לנו”. זכרו את המעגל: האשמה → הגנה → הסלמה → נסיגה → האשמה.","A pattern isn’t “who you are” – it’s “what happens to us”. Remember the cycle: blame → defense → escalation → withdrawal → blame.")}</p></div><div class="cen"><button class="btn ghost" onclick="MT={i:0,sel:null,ok:0};render()">${X("שוב","Again")}</button> <button class="btn" onclick="go('mod',1,'P')">${X("לתרגול הזוגי","To the couple practice")} ${NX()}</button></div>`}
+ const [q,a]=MQ[MT.i],s=MT.sel;
+ return `<div class="card"><p class="mut">${X("איזה דפוס זה?","Which pattern is this?")} · ${MT.i+1} ${X("מתוך","of")} ${MQ.length}</p><h3>${q}</h3>${PT.map((p,i)=>`<button class="opt ${s!=null?(i==a?"ok":i==s?"no":""):""}" ${s!=null?"disabled":`onclick="MT.sel=${i};if(${i}==${a})MT.ok++;render()"`}>${p}</button>`).join("")}
+ ${s!=null?`<p><b>${X("מה באמת קורה:","What’s really happening:")}</b> ${PTX[a]}</p><button class="btn" onclick="MT.i++;MT.sel=null;render()">${X("הבא","Next")} ${NX()}</button>`:""}</div>`;
+}
+
+
+
+/* ---------- premium step 6 ---------- */
+
+
+
+/* ---------- guided couple practice ---------- */
+function flat(p){
+ const f=x=>({...x}),a=(p.pre||[]).map(f).concat(p.round.map(f));
+ if(p.swap)a.push(...p.round.map(s=>({...s,f:1,r2:1})));
+ return a.concat((p.closing||[]).map(f));
+}
+
+function pstart(i,silent){P={pi:i,setup:1,first:0,fl:flat(M[S.m].P[i])};if(!silent)render()}
+function pstep(){clearInterval(T.iv);T.run=0;const s=P.fl[P.i];T.left=s.s||0;render()}
+function tdraw(){const s=P.fl&&P.fl[P.i];if(!s||!s.s)return;const e=$("#tm");if(!e)return;const l=T.left;e.textContent=String(Math.floor(l/60)).padStart(2,"0")+":"+String(l%60).padStart(2,"0");const b=$("#tb");if(b)b.textContent=T.run?X("השהיה","Pause"):l==0?X("הסתיים ✓","Done ✓"):X("התחלה","Start")}
+function ttog(){
+ if(T.run){clearInterval(T.iv);T.run=0;tdraw();return}
+ if(T.left<=0)T.left=P.fl[P.i].s;
+ T.run=1;T.iv=setInterval(()=>{T.left--;if(T.left<=0){T.left=0;clearInterval(T.iv);T.run=0;beep()}tdraw()},1000);tdraw();
+}
+function trst(){clearInterval(T.iv);T.run=0;T.left=P.fl[P.i].s;tdraw()}
+function beep(){try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=660;g.gain.value=.15;o.start();o.stop(c.currentTime+.7)}catch(e){}try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}}
+/* ================= v3: login, invite, chat, shared access ================= */
+const VERIFY_CODE="1234";/* TEST ONLY. For real SMS use Firebase Auth (phone) / Twilio Verify and verify on a server. */
+const UNLOCK_PARAM="LOVE2026";
+const AE={name:["נא להזין שם פרטי","Please enter a first name"],phone:["נא להזין מספר טלפון תקין","Please enter a valid phone number"],code:["הקוד שגוי, נסו שוב","Incorrect code, please try again"]};
+const uid=()=>Math.random().toString(36).slice(2,8);
+const cl=s=>String(s).replace(/[\s.,!?]+$/,"");
+const shuf=n=>{const a=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function urlParam(k){let v=null;try{v=new URLSearchParams(location.search).get(k);if(!v){const m=(location.hash||"").slice(1).match(new RegExp("^"+k+"[-=]([A-Za-z0-9_-]+)$"));if(m)v=m[1]}}catch(e){}return v}
+const nm=i=>S.names[i]||(S.mode=="remote"&&i!==S.me?X("בן/בת הזוג","Your partner"):X(i?"בן/בת זוג ב":"בן/בת זוג א",i?"Partner B":"Partner A"));
+let tTO;function toast(t){const e=$("#toast");if(!e)return;e.textContent=t;e.classList.add("on");clearTimeout(tTO);tTO=setTimeout(()=>e.classList.remove("on"),2200)}
+function copyText(t){const ok=()=>toast(X("הועתק ✓","Copied ✓"));
+ function fb(){try{const a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();ok()}catch(e){toast(X("לא הצלחנו להעתיק – סמנו והעתיקו ידנית","Couldn’t copy – select and copy manually"))}}
+ try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}}
+
+/* ============ SYNC ADAPTER (one "room" document per couple) ============
+ TODAY: the room lives in localStorage and is synced between tabs of the SAME browser via the `storage` event
+ (enough to test host + guest in two tabs). Two real phones will NOT sync until you connect a backend.
+ >>> TO CONNECT FIREBASE / SUPABASE, replace Room.read / Room.write / Room.listen:
+   Firebase Firestore:  read  -> getDoc(doc(db,"rooms",r))            write -> setDoc(doc(db,"rooms",r), d, {merge:true})
+                        listen-> onSnapshot(doc(db,"rooms",r), s => onRoom(s.data()))
+   Supabase:            table rooms(id text primary key, data jsonb) -> upsert({id:r,data:d});
+                        listen-> supabase.channel("room-"+r).on("postgres_changes",{event:"*",table:"rooms",filter:"id=eq."+r}, p => onRoom(p.new.data)).subscribe()
+ Doc shape: {host:{name,phone}, guest:{name,phone}|null, status:"invited"|"connected", paid:{by,ts}|null, chat:[{id,from,name,text,ts}]}
+ Also move the 1234 check to a real SMS verification, and host this file on your own domain (published artifacts block calls to other sites). */
+const rid=()=>S.room||"local";
+const Room={
+ key:r=>"shk_room_"+r,
+ read(r){try{return JSON.parse(localStorage.getItem(Room.key(r))||"null")}catch(e){return null}},
+ write(r,d){try{localStorage.setItem(Room.key(r),JSON.stringify(d))}catch(e){}},
+ update(patch,msg){const r=rid(),d=Room.read(r)||{chat:[]};Object.assign(d,patch);if(msg)d.chat=(d.chat||[]).concat(msg).slice(-300);Room.write(r,d);onRoom(d,true)},
+ listen(){try{window.addEventListener("storage",e=>{if(e.key===Room.key(rid())&&e.newValue){try{onRoom(JSON.parse(e.newValue))}catch(x){}}})}catch(e){}}
+};
+function onRoom(d,mine){
+ if(!d)return;let ch=0;
+ if(S.me==1&&d.host&&d.host.name&&S.names[0]!==d.host.name){S.names[0]=d.host.name;ch=1}
+ if(S.me==0&&d.guest&&d.guest.name&&(S.names[1]!==d.guest.name||!S.partner||S.partner.phone!==d.guest.phone)){S.names[1]=d.guest.name;S.partner={name:d.guest.name,phone:d.guest.phone};ch=1}
+ if(S.mode=="remote"&&d.status&&d.status!==S.status){S.status=d.status;ch=1}
+ if(d.paid&&!S.full){S.full=1;S.paidBy=d.paid.by||"";ch=1;if(!mine)toast(X("הגישה המלאה נפתחה לזוג 💎","Full access is now open for the couple 💎"))}
+ S.chat=d.chat||[];
+ if(ch){save();softRender()}
+ chatDraw();
+}
+function softRender(){const a=document.activeElement;if(a&&(a.tagName=="INPUT"||a.tagName=="TEXTAREA")&&a.closest&&a.closest("#app")){S.pend=1;return}render()}
+try{document.addEventListener("focusout",()=>{if(S.pend){S.pend=0;setTimeout(render,300)}})}catch(e){}
+
+/* ================= chat ================= */
+const myIdx=()=>S.mode=="remote"?S.me:S.chatAs;
+function chatSend(text){text=(text||"").trim();if(!text)return;const i=myIdx();Room.update({},{id:uid()+Date.now(),from:i,name:nm(i),text:text.slice(0,500),ts:Date.now()})}
+function chatSubmit(){const e=$("#chat-in");if(!e)return;chatSend(e.value);e.value="";e.focus()}
+function chatOpen(v){S.chatOpen=v;if(v){S.seenTs=Date.now();save()}chatDraw(1)}
+function unread(){return S.mode=="remote"?S.chat.filter(m=>m.from!==S.me&&m.ts>S.seenTs).length:0}
+function msgsHTML(){const me=myIdx();if(!S.chat.length)return `<p class="cen mut">${X("עוד אין הודעות. כתבו משהו חם 💗","No messages yet. Write something warm 💗")}</p>`;
+ return S.chat.map(m=>`<div class="mg ${m.from===me?"me":"th"}"><small>${esc(m.name||"")} · ${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</small>${esc(m.text)}</div>`).join("")}
+function chatDraw(full){
+ const el=$("#chat");if(!el)return;
+ if(!(S.user&&S.user.ok&&(S.v=="map"||S.v=="mod"))){el.innerHTML="";return}
+ if(S.chatOpen&&!full&&$("#cm")){const c=$("#cm");c.innerHTML=msgsHTML();c.scrollTop=1e9;S.seenTs=Date.now();return}
+ if(!S.chatOpen){const u=unread();el.innerHTML=`<button class="fab" onclick="chatOpen(1)">💬 ${X("שיח זוגי","Couple chat")}${u?`<span class="bd">${u}</span>`:""}</button>`;return}
+ const single=S.mode!="remote";
+ el.innerHTML=`<div class="cp" role="dialog" aria-label="${X("שיח זוגי","Couple chat")}"><div class="ch"><b>💬 ${X("שיח זוגי","Couple chat")}</b><button class="back" onclick="chatOpen(0)" aria-label="${X("סגירה","Close")}">✕</button></div>
+ ${single?`<div class="pick">${[0,1].map(i=>`<button class="${S.chatAs==i?"on":""}" onclick="S.chatAs=${i};chatDraw(1)">${esc(nm(i))}</button>`).join("")}</div>`:`<p class="mut" style="margin:6px 0">${S.status=="connected"?X("✅ מחוברים יחד","✅ Connected together"):X("⏳ ממתינים לבן/בת הזוג","⏳ Waiting for your partner")}</p>`}
+ <div class="cm" id="cm" aria-live="polite">${msgsHTML()}</div>
+ <div class="cin"><input id="chat-in" maxlength="500" placeholder="${X("כתבו הודעה…","Write a message…")}" onkeydown="if(event.key=='Enter')chatSubmit()"><button class="btn" onclick="chatSubmit()">${X("שלח","Send")}</button></div>
+ <p class="cn">${X("מצב בדיקה: ההודעות מסתנכרנות כרגע רק בין לשוניות באותו דפדפן. לסנכרון בין שני טלפונים יש לחבר Firebase/Supabase (ראו Room בקוד).","Test mode: messages currently sync only between tabs of the same browser. To sync two phones, connect Firebase/Supabase (see Room in the code).")}</p></div>`;
+ const c=$("#cm");if(c)c.scrollTop=1e9;const i=$("#chat-in");if(i)i.focus();
+}
+
+/* ================= navigation / views ================= */
+function setLang(l){S.lang=l;save();setL();if(P&&M[S.m]&&M[S.m].P[P.pi])P.fl=flat(M[S.m].P[P.pi]);render();if(S.chatOpen)chatDraw(1)}
+function langBar(){return `<div class="lang"><button class="${S.lang=="he"?"on":""}" onclick="setLang('he')">עברית</button><button class="${S.lang=="en"?"on":""}" onclick="setLang('en')">English</button></div>`}
+function go(v,m,tab){clearInterval(T.iv);T.run=0;S.v=v;if(m!=null)S.m=m;if(tab)S.tab=tab;P=null;render();if(v=="map"&&total()>0)setTimeout(focusNext,80);else window.scrollTo(0,0)}
+function focusNext(){const e=document.querySelector(".st.next");if(e)e.scrollIntoView({block:"center",behavior:"smooth"});else window.scrollTo(0,0)}
+function roleOf(){const asker=CS.pos<5?0:1,v=S.mode=="remote"?S.me:0;return asker===v?"ask":"ans"}
+function setBody(){const b=document.body,r=S.v=="mod"&&S.m==4&&S.tab=="T"&&CS.pos<10?roleOf():"";b.classList.toggle("wine",S.v=="mod"&&S.m==5);b.classList.toggle("ask",r=="ask");b.classList.toggle("ans",r=="ans")}
+const footer=()=>`<p class="foot">${X("© כל הזכויות שמורות למאור בידאני – שיטת שפת הקשר","© All rights reserved to Maor Bidani – The Language of Connection method")}</p>`;
+function render(){
+ const a=$("#app");setBody();let h="";const lb=`<div style="display:flex;justify-content:flex-end">${langBar()}</div>`;
+ if(S.v=="splash")h=splash();
+ else if(S.v=="login")h=lb+login();
+ else if(S.v=="about")h=lb+about();
+ else{const body=S.v=="map"?map():mod(),p=Math.round(total()/TOT*100);
+  h=lb+`<div class="top"><button class="back" onclick="go('${S.v=="map"?"about":"map"}')">${BK()} ${S.v=="map"?X("מבוא","Intro"):X("למפה","Map")}</button><div class="bar"><i style="width:${p}%"></i></div><span class="pct">${p}%</span></div>`+body}
+ a.innerHTML=h+(S.v=="splash"?"":footer())+modal();
+ if(S.v=="login"&&S.au.step=="code"){const c=$("#au-c");if(c)c.focus()}
+ if(P&&!P.setup)tdraw();
+ if(S.v=="mod"&&S.tab=="T"&&BD[M[S.m].tool])bup(M[S.m].tool);
+ chatDraw();
+}
+function logo(sz,k){k=k||"s";const H="M50 88 C 10 60 6 28 27 19 C 40 14 50 22 50 31 C 50 22 60 14 73 19 C 94 28 90 60 50 88 Z";
+ return `<svg class="logo" width="${sz}" height="${sz}" viewBox="0 0 200 200" role="img" aria-label="${X("לוגו שפת הקשר","Language of Connection logo")}"><defs><linearGradient id="a${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9566b"/><stop offset="1" stop-color="#e58a8f"/></linearGradient><linearGradient id="b${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d49a3a"/><stop offset="1" stop-color="#f0c675"/></linearGradient></defs>
+ <circle class="draw" pathLength="1" cx="100" cy="100" r="92" stroke="url(#b${k})"/>
+ <g transform="translate(22 52) rotate(-12 55 50) scale(1.05)"><path class="draw" pathLength="1" d="${H}" stroke="url(#a${k})"/></g>
+ <g transform="translate(66 52) rotate(12 55 50) scale(1.05)"><path class="draw d2" pathLength="1" d="${H}" stroke="url(#b${k})"/></g>
+ <g transform="translate(78 86) scale(.44)"><path class="ht" d="${H}" fill="url(#a${k})"/></g></svg>`}
+function splash(){return `<div class="splash" onclick="leaveSplash()">${logo(220,"s")}<h1 class="sp-t">${X("שפת הקשר","The Language of Connection")}</h1><p class="sp-s">${X("כשיש שפה – יש קשר","When there is a language – there is a bond")}</p></div>`}
+function leaveSplash(){if(S.v!="splash")return;const ok=S.user&&S.user.ok;S.v=(S.invite||!ok)?"login":(S.aboutSeen?"map":"about");if(S.v=="login"&&S.user){S.au.name=S.user.name;S.au.phone=S.user.phone}render()}
+function login(){
+ const a=S.au,er=a.err?`<p class="err">${AE[a.err][S.lang=="he"?0:1]}</p>`:"";
+ return `<div class="hero" style="padding-top:10px">${logo(110,"l")}<h2 class="h2">${X("ברוכים הבאים","Welcome")}</h2>
+ ${S.invite?`<div class="card quote">${X("💌 הוזמנתם להצטרף לחוויית זוגיות משותפת בשפת הקשר","💌 You’ve been invited to join a shared couple’s experience")}</div>`:""}
+ <div class="card" style="text-align:start;max-width:420px;margin:12px auto">
+ ${a.step=="phone"?`<label class="lab">${X("שם פרטי","First name")}</label><input id="au-n" value="${esc(a.name)}" maxlength="20" autocomplete="given-name">
+ <label class="lab" style="margin-top:12px">${X("מספר טלפון","Phone number")}</label><input id="au-p" type="tel" inputmode="tel" dir="ltr" value="${esc(a.phone)}" placeholder="050-0000000" autocomplete="tel">${er}
+ <p class="cen"><button class="btn" onclick="sendCode()">${X("שלח קוד אימות","Send verification code")}</button></p>`
+ :`<p>${X("שלחנו קוד אימות אל","We sent a verification code to")} <b dir="ltr">${esc(a.phone)}</b></p><p class="mut">${X("לבדיקה בלבד: הקוד הוא 1234 (לא נשלחת הודעה אמיתית).","For testing only: the code is 1234 (no real message is sent).")}</p>
+ <input id="au-c" dir="ltr" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="one-time-code" style="text-align:center;font-size:26px;letter-spacing:8px">${er}
+ <p class="cen"><button class="btn" onclick="verify()">${X("אימות והמשך","Verify & continue")}</button></p><p class="cen"><button class="back" onclick="S.au.step='phone';S.au.err='';render()">${X("החלפת מספר","Change number")}</button></p>`}
+ </div></div>`}
+function sendCode(){const n=($("#au-n").value||"").trim(),p=($("#au-p").value||"").trim();S.au.name=n;S.au.phone=p;
+ if(n.length<2){S.au.err="name";render();return}if(p.replace(/\D/g,"").length<8){S.au.err="phone";render();return}
+ S.au.err="";S.au.step="code";/* TODO: call your SMS provider here */render()}
+function verify(){const c=($("#au-c")||{value:""}).value.trim();if(c!==VERIFY_CODE){S.au.err="code";render();return}
+ S.user={name:S.au.name,phone:S.au.phone,ok:1};S.au.err="";
+ if(S.invite)joinInvite(S.invite);else{S.me=0;S.names[0]=S.user.name}
+ save();S.v=S.aboutSeen?"map":"about";render();window.scrollTo(0,0)}
+try{document.addEventListener("keydown",e=>{if(e.key!="Enter")return;const id=e.target&&e.target.id;if(id=="au-n"){const p=$("#au-p");if(p)p.focus()}else if(id=="au-p")sendCode();else if(id=="au-c")verify()})}catch(e){}
+function about(){return `<div class="card" style="margin-top:8px"><h2>${X("איך קמה שפת הקשר","How the Language of Connection began")}</h2>
+ <p>${X("זוגיות היא אחד הקשרים המשמעותיים והמורכבים בחיינו, ובכל זאת רוב הזוגות נכנסים אליה בלי ללמוד את הכלי המרכזי שמחזיק אותה לאורך זמן: התקשורת. רוב הקשיים בזוגיות אינם נובעים מחוסר אהבה, אלא משיח לא מודע – מילים שנאמרות מכאב ולא מאחריות, שתיקות שמחליפות שיחה, ותגובות אוטומטיות שמרחיקות במקום לקרב.","A relationship is one of the most meaningful and complex bonds in our lives, yet most couples enter it without learning the central tool that sustains it over time: communication. Most difficulties in relationships don’t come from a lack of love, but from unconscious speech – words said from pain rather than responsibility, silences that replace conversation, and automatic reactions that push apart instead of bringing close.")}</p>
+ <p>${X("מתוך ההבנה הזו נולדה שיטת שפת הקשר: שיטה סדורה שמתייחסת לתקשורת הזוגית כאל שפה נרכשת – לא ככישרון מולד ולא כעניין של אופי.","From this understanding the Language of Connection method was born: a structured method that treats couple communication as an acquired language – not an innate talent and not a matter of character.")}</p>
+ <h3 style="margin-top:14px">${X("מה המטרה","The goal")}</h3><ul class="rules"><li>${X("ליצור מרחב בטוח בדיבור","Create a safe space for speaking")}</li><li>${X("להתמודד עם קונפליקטים מבלי לפגוע בקשר","Face conflict without harming the relationship")}</li><li>${X("לפתח שיח שמחזק קרבה ואמון","Develop talk that strengthens closeness and trust")}</li><li>${X("לבנות זוגיות שמחזיקה לאורך זמן","Build a relationship that lasts")}</li></ul>
+ <p class="mut">${X("לא באמצעות שינוי בן או בת הזוג, אלא באמצעות שינוי השפה שביניהם.","Not by changing your partner, but by changing the language between you.")}</p></div>
+ <div class="card quote">${X("כשיש שפה – יש קשר.<br>וכשלומדים את שפת הקשר – הזוגיות מפסיקה לשרוד ומתחילה להיבנות.","When there is a language – there is a bond.<br>And when you learn the language of connection – the relationship stops surviving and starts building.")}</div>
+ <p class="cen">${X("מייסד השיטה","Founder of the method")}<br><b style="font-size:22px">${X("מאור בידאני","Maor Bidani")}</b></p>
+ <div class="cen"><button class="btn big" onclick="startJourney()">${X("הבא – מתחילים במסע","Next – start the journey")} ${NX()}</button></div>`}
+function startJourney(){S.aboutSeen=1;save();go("map")}
+
+/* ================= invite / mode ================= */
+const baseUrl=()=>{try{return location.href.split("#")[0].split("?")[0]}catch(e){return ""}};
+const inviteLink=()=>baseUrl()+"#invite-"+S.room;/* the page also accepts ?invite=ROOM and #invite-ROOM */
+function waLink(){let p=(S.partner&&S.partner.phone||"").replace(/\D/g,"");if(p.startsWith("0"))p="972"+p.slice(1);
+ const t=X(`היי ${S.partner?S.partner.name:""}, ${S.user.name} מזמין/ה אותך לשחק איתי בשפת הקשר 💞 ${inviteLink()}`,`Hi ${S.partner?S.partner.name:""}, ${S.user.name} is inviting you to play The Language of Connection together 💞 ${inviteLink()}`);
+ return "https://wa.me/"+p+"?text="+encodeURIComponent(t)}
+function confirmSingle(){const n=($("#pn").value||"").trim();S.names[0]=S.user.name;S.names[1]=n;S.partner={name:n,phone:""};S.mode="single";S.me=0;S.room=null;S.status="";S.pick=null;save();const d=Room.read("local");S.chat=d?d.chat||[]:[];render()}
+function createInvite(){const n=($("#pn").value||"").trim(),p=($("#pp").value||"").trim();
+ if(n.length<2||p.replace(/\D/g,"").length<8){toast(X("נא להזין שם וטלפון תקינים של בן/בת הזוג","Please enter your partner’s name and a valid phone"));return}
+ const old=Room.read("local");S.room="r"+uid();S.me=0;S.mode="remote";S.names[0]=S.user.name;S.names[1]=n;S.partner={name:n,phone:p};S.status="invited";S.pick=null;
+ Room.update({host:{name:S.user.name,phone:S.user.phone},invited:{name:n,phone:p},guest:null,status:"invited",paid:S.full?{by:S.paidBy||S.user.name,ts:Date.now()}:null,chat:old&&old.chat?old.chat:[]});
+ save();render()}
+function joinInvite(room){S.room=room;S.me=1;S.mode="remote";S.invite=null;S.names[1]=S.user.name;S.status="connected";
+ const d=Room.read(room)||{chat:[]};S.names[0]=d.host&&d.host.name?d.host.name:"";S.chat=d.chat||[];if(d.paid){S.full=1;S.paidBy=d.paid.by||""}
+ const patch={guest:{name:S.user.name,phone:S.user.phone},status:"connected"};if(!d.paid&&S.full)patch.paid={by:S.paidBy||S.user.name,ts:Date.now()};Room.update(patch)}
+function changeMode(){S.mode=null;S.room=null;S.me=0;S.status="";S.pick=null;save();const d=Room.read("local");S.chat=d?d.chat||[]:[];render()}
+function coupleCard(){
+ const a=esc(nm(0)),b=esc(nm(1));
+ if(!S.mode){
+  if(S.pick=="single")return `<div class="card"><h3>👫 ${X("יחד במכשיר אחד","Together on one device")}</h3><label class="lab">${X("שם בן/בת הזוג","Partner’s name")}</label><input id="pn" maxlength="20" value="${esc(S.names[1])}"><div class="row"><button class="btn ghost" onclick="S.pick=null;render()">${BK()} ${X("חזרה","Back")}</button><button class="btn" onclick="confirmSingle()">${X("המשך","Continue")}</button></div></div>`;
+  if(S.pick=="remote")return `<div class="card"><h3>📱 ${X("הזמנת בן/בת זוג למכשיר נפרד","Invite your partner on a separate device")}</h3><label class="lab">${X("שם בן/בת הזוג","Partner’s name")}</label><input id="pn" maxlength="20" value="${esc(S.names[1])}"><label class="lab" style="margin-top:10px">${X("טלפון בן/בת הזוג","Partner’s phone")}</label><input id="pp" type="tel" dir="ltr" inputmode="tel" placeholder="050-0000000"><div class="row"><button class="btn ghost" onclick="S.pick=null;render()">${BK()} ${X("חזרה","Back")}</button><button class="btn" onclick="createInvite()">${X("צרו לינק הזמנה","Create invite link")}</button></div></div>`;
+  return `<div class="card"><h3>${X("איך משחקים?","How do you want to play?")}</h3><div class="grid"><button class="opt" onclick="S.pick='single';render()"><b>👫 ${X("יחד במכשיר אחד","Together on one device")}</b><br><span class="mut">${X("מעבירים את הטלפון ביניכם","Pass the phone between you")}</span></button><button class="opt" onclick="S.pick='remote';render()"><b>📱 ${X("להזמין בן/בת זוג למכשיר נפרד","Invite your partner on a separate device")}</b><br><span class="mut">${X("לינק הזמנה בוואטסאפ","An invitation link via WhatsApp")}</span></button></div></div>`}
+ const paid=S.full?`<p class="mut">💎 ${X("גישה מלאה פתוחה לזוג","Full access is open for the couple")}${S.paidBy?X(` (שילם/ה: ${esc(S.paidBy)})`,` (paid by ${esc(S.paidBy)})`):""}</p>`:"";
+ if(S.mode=="single")return `<div class="card"><p>👫 ${X(`משחקים יחד במכשיר אחד: ${a} ♥ ${b}`,`Playing together on one device: ${a} ♥ ${b}`)} <button class="back" onclick="changeMode()">${X("שינוי","Change")}</button></p>${paid}</div>`;
+ const conn=S.status=="connected";
+ return `<div class="card"><span class="chip ${conn?"ok":""}">${conn?X("✅ מחוברים יחד","✅ Connected together"):X(`⏳ ממתינים לבן/בת הזוג (${b})`,`⏳ Waiting for your partner (${b})`)}</span>
+ ${S.me==0&&!conn?`<p class="mut" style="margin-bottom:0">${X("שלחו את לינק ההזמנה:","Send the invitation link:")}</p><div class="lk">${esc(inviteLink())}</div><div class="ra"><button class="btn ghost" onclick="copyText(inviteLink())">📋 ${X("העתקת לינק","Copy link")}</button><a class="btn" href="${waLink()}" target="_blank" rel="noopener">WhatsApp</a></div>`:`<p>${a} ♥ ${b}</p>`}
+ ${paid}<button class="back" onclick="changeMode()">${X("שינוי מצב משחק","Change play mode")}</button></div>`}
+
+/* ================= map / module ================= */
+function map(){
+ const all=total()==TOT,cur=M.findIndex((_,i)=>!fin(i)&&(i==0||fin(i-1)));
+ return `<h2 class="h2">${X(`המסע של ${esc(nm(0))} ♥ ${esc(nm(1))}`,`${esc(nm(0))} ♥ ${esc(nm(1))}’s journey`)} ${all?"🎉":"💗"}</h2>
+ ${coupleCard()}
+ <details class="card"><summary>${X("מהי שפת הקשר?","What is the Language of Connection?")}</summary><p>${X("שיטה סדורה לבניית זוגיות, המתייחסת לתקשורת הזוגית כאל שפה נרכשת – לא ככישרון מולד. היא לא מחפשת אשמים ולא “מתקנת” בני זוג; היא שואלת “איזו שפה פועלת כאן?” ומלמדת לבטא רגשות בלי לפגוע, להתמודד עם קונפליקט בלי להחריב ולבקש קרבה בלי תלות.","A structured method for building a relationship that treats couple communication as an acquired language – not an innate talent. It doesn’t look for blame and doesn’t “fix” partners; it asks “which language is operating here?” and teaches how to express feelings without hurting, handle conflict without destroying, and ask for closeness without dependency.")}</p></details>
+ ${all?`<div class="card quote">${X("הגעתם ליעד! 🥂<br>אהבה ללא שפה – מתבלבלת. שפה בלי קרבה – ריקה.<br><b>כששפת הקשר מחוברת לשיח קרבה – הזוגיות פורחת.</b>","You made it! 🥂<br>Love without language gets confused. Language without closeness is empty.<br><b>When the language of connection joins closeness talk – the relationship blossoms.</b>")}</div>`:""}
+ ${S.full?"":`<div class="cen"><button class="btn ghost" onclick="openPay()">💎 ${X("פתיחת הגרסה המלאה","Unlock the full version")}</button></div>`}
+ <div class="map">${M.map((m,i)=>{const prior=i==0||fin(i-1),u=unlocked(i),f=fin(i),pay=prior&&!u,nx=i==cur&&!all;
+  const cls=(f?"fin":u?"open":pay?"pay":"lock")+(i==5?" pre":"")+(nx?" next":"");
+  return `<button class="st ${cls}" ${u?`onclick="go('mod',${i},'L')"`:pay?`onclick="openPay()"`:"disabled"}><span class="ic">${u?m.ic:pay?"💎":"🔒"}</span><span><small>${i==5?X("תחנה 6 · פרמיום","Station 6 · Premium"):X("תחנה ","Station ")+(i+1)}</small><h3>${m.t}</h3><small>${pay?X("פתיחה בגרסה המלאה","Unlock with the full version"):m.s}</small>${nx?`<small class="nx">👉 ${X("כאן ממשיכים","Continue here")}</small>`:""}<span class="pips">${TK(i).map(k=>`<b class="${D(i,k)?"on":""}"></b>`).join("")}</span></span></button>`}).join("")}</div>
+ <p class="cen mut">${X("כל תחנה נפתחת אחרי שמשלימים את הקודמת: לימוד, כלי ותרגול.","Each station opens after you complete the previous one: lesson, tool and practice.")}</p>
+ <p class="cen"><button class="back" onclick="askReset()">${X("איפוס מלא","Full reset")}</button></p>`}
+function mod(){
+ const m=M[S.m];
+ if(S.m==5)return `<h2 class="h2">${m.ic} ${m.t}</h2>`+prem();
+ const tabs=[["L",X("📖 לימוד","📖 Learn")],["T",X("🛠 כלי","🛠 Tool")],["P",X("💞 תרגול זוגי","💞 Couple practice")]];
+ const prev=`<div class="row"><button class="btn ghost" onclick="go('mod',${S.m},'L')">${BK()} ${X("הקודם","Previous")}</button><span></span></div>`;
+ return `<h2 class="h2">${m.ic} ${X("תחנה","Station")} ${S.m+1}: ${m.t}</h2>
+ <div class="tabs">${tabs.map(([k,l])=>`<button class="${S.tab==k?"on":""}" onclick="go('mod',${S.m},'${k}')">${l}${D(S.m,k)?' <span class="tick">✓</span>':""}</button>`).join("")}</div>`
+ +(S.tab=="L"?lesson(m):S.tab=="T"?tool(m)+prev:practice(m));
+}
+
+/* ================= sentence builder (modules 3 & 4) ================= */
+function sentence(k){const v=(BV[k]||[]).map(x=>(x||"").trim()),r=v[3]?(/[.!?]$/.test(v[3])?v[3]:v[3]+"."):"";return v.slice(0,3).filter(Boolean).map(cl).join(", ")+(r?". "+r:".")}
+function sendSentence(k){chatSend(sentence(k));chatOpen(1);toast(X("נשלח לצ'אט הזוגי 💬","Sent to the couple chat 💬"))}
+function builder(k){
+ const c=BD[k],v=BV[k]=BV[k]||["","","",""];
+ return `<div class="card"><p>${c.h}</p>${c.f.map((f,i)=>`<label class="lab" style="--c:${COL[i]}">${f[0]}</label><textarea rows="2" id="b${i}" placeholder="${X("לדוגמה: ","e.g. ")}${f[1]}" oninput="bup('${k}')">${esc(v[i])}</textarea>`).join("")}</div>
+ <div class="card res" id="res"><div class="rl">✨ ${X("משפט התוצאה שלכם","Your result sentence")}</div><div class="rt" id="rt"></div>
+ <div class="ra"><button class="btn" id="bcp" onclick="copyText(sentence('${k}'))">📋 ${X("העתקה","Copy")}</button><button class="btn ghost" id="bsn" onclick="sendSentence('${k}')">💬 ${X("שליחה לצ'אט הזוגי","Send to the couple chat")}</button></div></div>
+ ${k=="build3"?`<div class="card"><h3>${X("משפטים שמפסיקים להזיק","Sentences that stop causing harm")}</h3><p class="mut">${X("המרה משפת הישרדות לשפת בנייה","Converting survival language into building language")}</p>${CV.map(c=>`<div class="cv"><div class="a">${c[0]}</div><span>${NX()}</span><div class="b">${c[1]}</div></div>`).join("")}</div>`:""}
+ <div class="cen"><button class="btn" id="bd" onclick="mark(${S.m},'T');go('mod',${S.m},'P')">${X("סיימנו – לתרגול הזוגי","Done – to the couple practice")} ${NX()}</button></div>`}
+function bup(k){
+ const c=BD[k],v=c.f.map((_,i)=>($("#b"+i)||{value:""}).value.trim());BV[k]=v;const rt=$("#rt");if(!rt)return;
+ const ok=v.every(x=>x.length>2),sep=[", ",", ",". ",""];
+ rt.innerHTML=v.some(x=>x)?v.map((x,i)=>(x?`<span class="seg" style="--c:${COL[i]}">${esc(i<3?cl(x):x)}</span>`:`<span class="ph">[${c.f[i][0]}]</span>`)+sep[i]).join("")+(v[3]&&!/[.!?]$/.test(v[3])?".":""):`<span class="ph">${X("המשפט המלא יופיע כאן…","Your full sentence will appear here…")}</span>`;
+ const r=$("#res");if(r)r.classList.toggle("on",ok);
+ ["#bcp","#bsn"].forEach(s=>{const b=$(s);if(b)b.disabled=!ok});const d=$("#bd");if(d)d.disabled=!ok&&!D(S.m,"T")}
+
+/* ================= module 5 tool: 5 + 5 closeness cards ================= */
+function deck5(){if(CS.order)return CS.order;let s=0;for(const ch of rid())s=(s*31+ch.charCodeAt(0))>>>0;
+ const o=CD.map((_,i)=>i);for(let i=o.length-1;i>0;i--){s=(s*1664525+1013904223)>>>0;const j=s%(i+1);[o[i],o[j]]=[o[j],o[i]]}return CS.order=o}
+function cardGo(d){if(CS.pos==0&&d<0){go("mod",4,"L");return}CS.pos=Math.min(10,CS.pos+d);if(CS.pos>=10)mark(4,"T");render()}
+function cards(){
+ const o=deck5(),p=CS.pos;
+ if(p>=10)return `<div class="card cen"><h2 class="big">🎉 ${X("סיימתם! 5 קלפים לכל אחד","You did it! 5 cards each")}</h2><p>${X("כל אחד שאל וענה – כעת עוברים לתרגול הזוגי.","Each of you asked and answered – now on to the couple practice.")}</p></div><div class="row"><button class="btn ghost" onclick="CS.pos=0;render()">${X("להתחיל שוב","Start again")}</button><button class="btn" onclick="go('mod',4,'P')">${X("לתרגול הזוגי","To the couple practice")} ${NX()}</button></div>`;
+ const asker=p<5?0:1,ans=1-asker,v=S.mode=="remote"?S.me:0,role=asker===v?"ask":"ans";
+ return `${p==5?`<div class="card quote">🔄 ${X(`החליפו תפקידים! עכשיו ${esc(nm(asker))} שואל/ת`,`Switch roles! Now ${esc(nm(asker))} asks`)}</div>`:""}
+ <p class="rolebar">${X(`${esc(nm(asker))} שואל/ת · ${esc(nm(ans))} עונה`,`${esc(nm(asker))} asks · ${esc(nm(ans))} answers`)}</p>
+ <p class="cen"><span class="role ${role=="ask"?"":"l"}">${esc(nm(v))}: ${role=="ask"?X("השואל/ת","the asker"):X("העונה","the answerer")}</span></p>
+ <div class="card quote" style="font-size:23px;min-height:160px;display:grid;place-items:center">${CD[o[p]]}</div>
+ <p class="cen mut">${X(`קלף ${p+1} מתוך 10 · תור ${esc(nm(asker))}: ${p%5+1} מתוך 5`,`Card ${p+1} of 10 · ${esc(nm(asker))}’s turn: ${p%5+1} of 5`)}</p>
+ <div class="row"><button class="btn ghost" onclick="cardGo(-1)">${BK()} ${X("הקודם","Previous")}</button><button class="btn" onclick="cardGo(1)">${p==9?X("סיימנו","We’re done"):X("הקלף הבא","Next card")} ${NX()}</button></div>
+ <p class="cen mut">${X("השואל/ת מקריא/ה, והעונה עונה בכנות. המקשיב/ה אומר/ת רק: “שמעתי אותך” · “זה מובן לי” · “אני כאן איתך”.","The asker reads it aloud, the answerer replies honestly. The listener says only: “I hear you” · “I understand” · “I’m here with you”.")}</p>`}
+
+/* ================= step 6: 100 cards, numbered ================= */
+function prem(){
+ const nq=PRM.q.length,N=nq+PRM.d.length;
+ if(!G.order||G.order.length!=N){G.order=shuf(N);G.pos=0}
+ const idx=G.order[G.pos],dare=idx>=nq,txt=dare?PRM.d[idx-nq]:PRM.q[idx],n=G.pos+1,last=n>=N,a=esc(nm(G.pos%2)),b=esc(nm(1-G.pos%2));
+ return `<div class="card"><h3>${X("חוקי המשחק","Game rules")}</h3><ul class="rules">${PRM.rules.map((r,i)=>`<li>${["💌","🤍","👂","🌹"][i]} ${r}</li>`).join("")}</ul></div>
+ <p class="cen"><span class="role">${dare?X(`${a} שולף/ת ומציע/ה`,`${a} draws & proposes`):X(`${a} שולף/ת ושואל/ת`,`${a} draws & asks`)}</span> <span class="role l">${dare?X(`${b} מבצע/ת`,`${b} takes it on`):X(`${b} עונה`,`${b} answers`)}</span></p>
+ <p class="cen mut"><b>${dare?X("💋 הצעה לקרבה / אתגר אינטימי","💋 Closeness suggestion / intimate challenge"):X("💌 שאלה מהלב","💌 Question from the heart")}</b></p>
+ <div class="card quote" style="font-size:23px;min-height:170px;display:grid;place-items:center;border-color:var(--gold)">${txt}</div>
+ <p class="cen" style="font-size:20px"><b>${X(`${n} מתוך ${N}`,`${n} of ${N}`)}</b></p>
+ ${last?`<p class="cen"><b>🏁 ${X(`הגעתם לקלף ${N} – המשחק נעצר.`,`You’ve reached card ${N} – the game stops here.`)}</b></p>`:""}
+ <div class="row" style="justify-content:center;flex-wrap:wrap"><button class="btn ghost" onclick="G.order=null;render()">${X("להתחיל שוב","Start again")}</button>${last?"":`<button class="btn" onclick="G.pos++;render()">${X("קלף הבא","Next card")} 🔥</button>`}<button class="btn" onclick="mark(5,'G');go('map')">${X("סיום","Finish")}</button></div>`}
+
+/* ================= payment / reset modals ================= */
+function openPay(){S.modal="pay";S.err="";S.payer=S.me;render()}
+function buy(){if(PAY_URL){window.open(PAY_URL,"_blank","noopener")}else{S.err="pay";render()}}
+function unlockFull(){S.full=1;S.paidBy=nm(S.payer!=null?S.payer:S.me);S.modal=null;S.err="";save();Room.update({paid:{by:S.paidBy,ts:Date.now()}});render();if(S.v=="map")setTimeout(focusNext,80)}
+function applyCode(){const v=($("#code")||{value:""}).value.trim();if(v===ACCESS_CODE)unlockFull();else{S.err="code";render()}}
+function askReset(){S.modal="reset";render()}
+function doFullReset(){
+ clearInterval(T.iv);
+ try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.indexOf("shk")==0)localStorage.removeItem(k)}}catch(e){}
+ const lang=S.lang;S=fresh();S.lang=lang;S.v="login";
+ Q={i:0,sc:[0,0,0]};MT={i:0,sel:null,ok:0};BV={};CS={pos:0,order:null};G={order:null,pos:0};P=null;
+ save();setL();render();window.scrollTo(0,0)}
+function modal(){
+ if(S.modal=="reset")return `<div class="ov"><div class="md" role="dialog" aria-modal="true"><h2>${X("האם לאפס את כל ההתקדמות?","Reset all progress?")}</h2><p class="mut">${X("הכול יימחק לחלוטין: השלבים שהושלמו, שמות בני הזוג, הטלפונים, החיבור הזוגי, הצ'אט והגישה המלאה. תחזרו למסך ההתחברות.","Everything will be erased: completed steps, partner names, phone numbers, the couple connection, the chat and the full access. You’ll return to the login screen.")}</p><div class="row"><button class="btn ghost" onclick="closeM()">${X("ביטול","Cancel")}</button><button class="btn" onclick="doFullReset()">${X("כן, לאפס הכול","Yes, reset everything")}</button></div></div></div>`;
+ if(S.modal=="pay")return `<div class="ov"><div class="md" role="dialog" aria-modal="true"><div class="big">💎</div><h2>${X("פותחים את הגרסה המלאה","Unlock the full version")}</h2><div class="price">${X("20 ₪","$6")}</div><p>${X("אחד מכם משלם פעם אחת – והגישה נפתחת לשני בני הזוג: כל 5 המודולים + שלב 6 הפרמיום, מרחב אינטימי.","One of you pays once – and access opens for both partners: all 5 modules + the Premium Step 6, the Intimate Space.")}</p>
+ <p class="mut" style="margin-bottom:4px">${X("מי משלם?","Who’s paying?")}</p><div class="pick">${[0,1].map(i=>`<button class="${S.payer==i?"on":""}" onclick="S.payer=${i};render()">${esc(nm(i))}</button>`).join("")}</div>
+ <button class="btn big" onclick="buy()">${X("לרכישה ותשלום","Buy now")}</button>${S.err=="pay"?`<p class="mut">${X("קישור הסליקה יתווסף בקרוב.","The checkout link will be added soon.")}</p>`:""}
+ <hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><input id="code" placeholder="${X("יש לי קוד גישה","I have an access code")}" autocomplete="off"><p style="margin:10px 0"><button class="btn ghost" onclick="applyCode()">${X("הפעלה","Activate")}</button></p>${S.err=="code"?`<p class="err">${X("הקוד שגוי, נסו שוב.","Incorrect code, please try again.")}</p>`:""}
+ <button class="back" onclick="closeM()">${X("אולי אחר כך","Maybe later")}</button></div></div>`;
+ return ""}
+
+/* ================= guided couple practice ================= */
+function practice(m){
+ if(!P){
+  if(m.P.length>1)return `<p>${X("בחרו תרגול:","Choose a practice:")}</p>`+m.P.map((p,i)=>`<button class="opt" onclick="pstart(${i})"><b>${p.n}</b></button>`).join("")+`<div class="row"><button class="btn ghost" onclick="go('mod',${S.m},'T')">${BK()} ${X("הקודם","Previous")}</button><span></span></div>`;
+  pstart(0,1);
+ }
+ const p=m.P[P.pi];
+ if(P.setup)return `<div class="card"><h3>${p.n}</h3>${p.prep?`<p><b>${X("הכנה:","Preparation:")}</b></p><ul class="rules">${p.prep.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}
+  <p><b>${X("כללי הבסיס – לקרוא לפני שמתחילים:","Ground rules – read before you start:")}</b></p><ul class="rules">${p.rules.map(x=>`<li>🛑 ${x}</li>`).join("")}</ul>
+  <p><b>${X("מי מדבר ראשון?","Who speaks first?")}</b></p><div class="pick">${[0,1].map(i=>`<button class="${P.first==i?"on":""}" onclick="P.first=${i};render()">${esc(nm(i))}</button>`).join("")}</div>
+  <p class="mut">${X("בהמשך מחליפים תפקידים.","You’ll switch roles later.")}</p>
+  <label><input type="checkbox" style="width:auto" id="rd" onchange="$('#go').disabled=!this.checked"> ${X("קראנו את הכללים ומסכימים להם","We’ve read the rules and agree to them")}</label></div>
+  <div class="row"><button class="btn ghost" onclick="${m.P.length>1?"P=null":`go('mod',${S.m},'T')`};${m.P.length>1?"render()":""}">${BK()} ${X("הקודם","Previous")}</button><button class="btn big" id="go" disabled onclick="P.setup=0;P.i=0;pstep()">${X("מתחילים 💗","Let’s begin 💗")}</button></div>`;
+ if(P.end)return `<div class="card cen"><h2 class="big">${X("🥂 כל הכבוד!","🥂 Well done!")}</h2><p>${X("סיימתם את התרגול. עשיתם משהו שרוב הזוגות לא עושים: עצרתם להקשיב.","You finished the practice. You did something most couples don’t: you stopped to listen.")}</p></div><div class="row"><button class="btn ghost" onclick="P.end=0;P.i=${P.fl.length-1};pstep()">${BK()} ${X("הקודם","Previous")}</button><button class="btn" onclick="endP()">${X("חזרה למפה – התחנה הבאה נפתחת","Back to the map – the next station opens")}</button></div>`;
+ const st=P.fl[P.i],sp=P.first^(st.f||0),w=st.w;
+ const role=w=="S"?`<span class="role">${X("מדבר/ת:","Speaker:")} ${esc(nm(sp))}</span>`:w=="L"?`<span class="role l">${X("מקשיב/ה:","Listener:")} ${esc(nm(1-sp))}</span>`:`<span class="role b">${X("שניכם יחד","Both together")}</span>`;
+ return `<div class="dots">${P.fl.map((_,i)=>`<b class="${i<=P.i?"on":""}"></b>`).join("")}</div>
+ ${st.r2&&P.fl[P.i-1]&&!P.fl[P.i-1].r2?`<p class="cen"><b>🔄 ${X("החליפו תפקידים!","Switch roles!")}</b></p>`:""}
+ <div class="card"><p class="mut">${X("שלב","Step")} ${P.i+1} ${X("מתוך","of")} ${P.fl.length}</p><h2>${st.t}</h2><p>${role}</p>${st.x?`<p>${st.x}</p>`:""}${(st.l||[]).map(l=>`<div class="line">${l}</div>`).join("")}
+ ${st.s?`<div class="timer"><div class="time" id="tm"></div><button class="btn" id="tb" onclick="ttog()"></button> <button class="back" onclick="trst()">${X("איפוס","Reset")}</button></div>`:""}</div>
+ <div class="row"><button class="btn ghost" onclick="${P.i?"P.i--;pstep()":"clearInterval(T.iv);T.run=0;P.setup=1;render()"}">${BK()} ${X("הקודם","Previous")}</button><button class="btn" onclick="${P.i==P.fl.length-1?"P.end=1;render()":"P.i++;pstep()"}">${P.i==P.fl.length-1?X("סיום","Finish"):X("הבא","Next")+" "+NX()}</button></div>`;
+}
+
+/* ================= init ================= */
+function init(){
+ setL();
+ S.invite=urlParam("invite");if(S.invite&&S.room===S.invite)S.invite=null;
+ if((urlParam("unlock")||"").toUpperCase()===UNLOCK_PARAM){S.full=1;save()}
+ const d=Room.read(rid());if(d)S.chat=d.chat||[];
+ Room.listen();render();setTimeout(leaveSplash,3000);
+}
+init();
+</script>
+</body>
+</html>

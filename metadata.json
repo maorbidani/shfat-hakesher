@@ -1,0 +1,6 @@
+{
+  "name": "שפת הקשר – משחק זוגי | The Language of Connection",
+  "description": "מסע זוגי אינטראקטיבי לבניית תקשורת מודעת, קרבה ואינטימיות – מאת מאור בידאני.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

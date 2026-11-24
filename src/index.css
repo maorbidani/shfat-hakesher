@@ -1,0 +1,185 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #fbf3ec;
+  --bg-grad: radial-gradient(circle at 12% 10%, rgba(249, 214, 198, 0.72) 0%, transparent 45%),
+             radial-gradient(circle at 88% 18%, rgba(242, 196, 206, 0.58) 0%, transparent 42%),
+             radial-gradient(circle at 50% 88%, rgba(244, 219, 173, 0.45) 0%, transparent 50%),
+             linear-gradient(160deg, #fdf8f2 0%, #faece2 50%, #f8e4e0 100%);
+  --card: rgba(255, 253, 250, 0.92);
+  --ink: #3b2230;
+  --mut: #7d6672;
+  --rose: #c9566b;
+  --rose2: #e58a8f;
+  --gold: #d49a3a;
+  --sage: #4f8d72;
+  --line: #ecd9cc;
+  --soft: #f8e4e0;
+}
+
+.dark {
+  --bg: #1d0f17;
+  --bg-grad: radial-gradient(circle at 15% 12%, rgba(114, 34, 62, 0.52) 0%, transparent 46%),
+             radial-gradient(circle at 85% 20%, rgba(162, 92, 54, 0.24) 0%, transparent 44%),
+             radial-gradient(circle at 50% 90%, rgba(88, 22, 47, 0.58) 0%, transparent 52%),
+             linear-gradient(165deg, #1b0d14 0%, #27131e 52%, #190b12 100%);
+  --card: rgba(44, 26, 36, 0.92);
+  --ink: #f7eae4;
+  --mut: #c7aab5;
+  --rose: #ee8397;
+  --rose2: #c9566b;
+  --gold: #e8b65c;
+  --sage: #7fc3a3;
+  --line: #4d2f3e;
+  --soft: #3a212e;
+}
+
+body.wine {
+  --bg: #260913;
+  --bg-grad: radial-gradient(circle at 20% 12%, rgba(184, 50, 79, 0.34) 0%, transparent 46%),
+             radial-gradient(circle at 82% 24%, rgba(224, 180, 90, 0.2) 0%, transparent 45%),
+             linear-gradient(160deg, #210710 0%, #330d1b 55%, #1d060e 100%);
+  --card: rgba(58, 18, 32, 0.94);
+  --ink: #f8ead6;
+  --mut: #d6ba9d;
+  --rose: #e0b45a;
+  --rose2: #b8324f;
+  --gold: #e0b45a;
+  --sage: #c47a5a;
+  --line: #5d2436;
+  --soft: #4b182a;
+  color-scheme: dark;
+}
+
+/* Module 5 distinct Asker / Answerer backgrounds */
+body.role-ask {
+  --bg: #fde0e6;
+  --bg-grad: radial-gradient(circle at 18% 15%, rgba(229, 138, 143, 0.42) 0%, transparent 50%),
+             radial-gradient(circle at 82% 80%, rgba(212, 154, 58, 0.25) 0%, transparent 45%),
+             linear-gradient(160deg, #fff0f3 0%, #fcdbe2 55%, #fae4d7 100%);
+}
+.dark body.role-ask,
+html.dark body.role-ask {
+  --bg: #3e1625;
+  --bg-grad: radial-gradient(circle at 18% 15%, rgba(201, 86, 107, 0.35) 0%, transparent 50%),
+             linear-gradient(160deg, #32101d 0%, #491a2c 55%, #2b0d18 100%);
+}
+
+body.role-ans {
+  --bg: #daf0e6;
+  --bg-grad: radial-gradient(circle at 80% 16%, rgba(95, 154, 127, 0.36) 0%, transparent 50%),
+             radial-gradient(circle at 20% 82%, rgba(212, 154, 58, 0.22) 0%, transparent 45%),
+             linear-gradient(160deg, #eef9f4 0%, #d4eee2 55%, #e2f2e9 100%);
+}
+.dark body.role-ans,
+html.dark body.role-ans {
+  --bg: #122d26;
+  --bg-grad: radial-gradient(circle at 80% 16%, rgba(127, 195, 163, 0.26) 0%, transparent 50%),
+             linear-gradient(160deg, #0e241e 0%, #16372f 55%, #0c1f1a 100%);
+}
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: var(--bg-grad);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: "Heebo", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  line-height: 1.65;
+  transition: background-color 0.45s ease, color 0.3s ease;
+}
+
+.font-editorial {
+  font-family: "Frank Ruhl Libre", "Heebo", serif;
+}
+
+/* Splash SVG Logo Animations */
+.logo-draw {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawPath 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.logo-draw-delay {
+  animation-delay: 0.45s;
+}
+
+.logo-wave {
+  fill: none;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawPath 1.6s 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.logo-heart-center {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: popIn 0.6s 1.35s ease forwards, heartBeat 1.8s 1.95s ease-in-out infinite;
+}
+
+.splash-fade {
+  opacity: 0;
+  animation: popIn 0.85s 0.9s ease forwards;
+}
+
+.splash-fade-sub {
+  opacity: 0;
+  animation: popIn 0.85s 1.35s ease forwards;
+}
+
+@keyframes drawPath {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.14); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(201, 86, 107, 0.2), 0 8px 24px rgba(201, 86, 107, 0.26); }
+  50% { box-shadow: 0 0 0 8px rgba(201, 86, 107, 0.08), 0 10px 28px rgba(201, 86, 107, 0.34); }
+}
+
+.station-next-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-draw, .logo-wave {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .logo-heart-center, .splash-fade, .splash-fade-sub {
+    animation: none;
+    opacity: 1;
+  }
+  .station-next-glow {
+    animation: none;
+  }
+}
